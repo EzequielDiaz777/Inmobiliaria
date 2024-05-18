@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_mapa"
+            android:icon="@drawable/icon_mapa"
+            android:title="Inicio" />
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/icon_perfil"
+            android:title="Mi perfil" />
+        <item
+            android:id="@+id/nav_lista"
+            android:icon="@drawable/icon_inmuebles"
+            android:title="Mis inmuebles" />
+        <item
+            android:id="@+id/nav_salir"
+            android:icon="@drawable/icon_logout"
+            android:title="Deslogueo" />
+    </group>
+</menu>

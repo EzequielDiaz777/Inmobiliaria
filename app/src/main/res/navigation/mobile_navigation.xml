@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_mapa">
+
+    <fragment
+        android:id="@+id/nav_mapa"
+        android:name="com.ezediaz.inmobiliaria.ui.mapa.MapaFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_mapa" />
+
+    <fragment
+        android:id="@+id/nav_salir"
+        android:name="com.ezediaz.inmobiliaria.ui.deslogeo.SalirFragment"
+        android:label="Deslogueo"
+        tools:layout="@layout/fragment_salir" />
+
+    <fragment
+        android:id="@+id/nav_lista"
+        android:name="com.ezediaz.inmobiliaria.ui.inmueble.ListaFragment"
+        android:label="Inmuebles"
+        tools:layout="@layout/fragment_lista">
+        <action
+            android:id="@+id/action_listaFragment_to_inmuebleFragment"
+            app:destination="@id/nav_inmueble" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_inmueble"
+        android:name="com.ezediaz.inmobiliaria.ui.inmueble.InmuebleFragment"
+        android:label="Detalle del inmueble"
+        tools:layout="@layout/fragment_inmueble" />
+
+    <fragment
+        android:id="@+id/nav_perfil"
+        android:name="com.ezediaz.inmobiliaria.ui.perfil.PerfilFragment"
+        android:label="Mi perfil"
+        tools:layout="@layout/fragment_perfil" />
+</navigation>

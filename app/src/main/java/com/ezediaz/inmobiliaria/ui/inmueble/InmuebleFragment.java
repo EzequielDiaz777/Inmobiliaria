@@ -110,10 +110,10 @@ public class InmuebleFragment extends Fragment {
                 Log.d("salida", "Posición: " + posicionUso);
                 i.setTipoId(posicionTipo);
                 i.setUsoId(posicionUso);
-                vm.agregarInmueble(binding.btnAgregarInmueble.getText().toString(), i, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), binding.spnTipo, binding.spnUso);
+                vm.agregarInmueble(i, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), getView());
             }
         });
-        vm.cargarInmueble(getArguments(), binding.spnTipo, binding.spnUso, binding.btnAgregarInmueble);
+        vm.cargarInmueble(getArguments(), binding.spnTipo, binding.spnUso, binding.btnAgregarInmueble, binding.btnAgregarFoto);
         return root;
     }
 

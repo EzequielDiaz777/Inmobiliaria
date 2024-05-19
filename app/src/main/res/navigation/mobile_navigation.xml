@@ -31,7 +31,11 @@
         android:id="@+id/nav_inmueble"
         android:name="com.ezediaz.inmobiliaria.ui.inmueble.InmuebleFragment"
         android:label="Detalle del inmueble"
-        tools:layout="@layout/fragment_inmueble" />
+        tools:layout="@layout/fragment_inmueble" >
+        <action
+            android:id="@+id/action_nav_inmueble_to_nav_lista"
+            app:destination="@id/nav_lista" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_perfil"

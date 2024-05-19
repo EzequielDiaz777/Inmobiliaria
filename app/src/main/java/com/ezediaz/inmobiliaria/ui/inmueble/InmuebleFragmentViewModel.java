@@ -14,7 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
@@ -83,7 +86,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         return mUso;
     }
 
-    public void cargarInmueble(Bundle arguments, Spinner spinnerTipo, Spinner spinnerUso, Button boton) {
+    public void cargarInmueble(Bundle arguments, Spinner spinnerTipo, Spinner spinnerUso, Button botonAI, Button botonAF) {
         Inmueble inmueble = new Inmueble();
         if (arguments != null) {
             inmueble = (Inmueble) arguments.getSerializable("inmueble");
@@ -105,17 +108,17 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                 spinnerTipo.setSelection(0);
                 spinnerUso.setSelection(0);
             }
-            boton.setVisibility(View.GONE);
+            botonAI.setVisibility(View.GONE);
+            botonAF.setVisibility(View.GONE);
         } else {
-            boton.setVisibility(View.VISIBLE);
-            Tipo tipo = new Tipo();
-            Uso uso = new Uso();
-            inmueble.setTipo(tipo);
-            inmueble.setUso(uso);
-            Spinner spinnerT = new Spinner(context);
-            spinnerT.setEnabled(true);
-            ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(spinnerT.getContext(), android.R.layout.simple_spinner_item);
-            spinnerT.setAdapter(tipoAdapter);
+            botonAI.setVisibility(View.VISIBLE);
+            botonAF.setVisibility(View.VISIBLE);
+            mHabilitar.setValue(true);
+            ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(spinnerTipo.getContext(), android.R.layout.simple_spinner_item);
+            ArrayAdapter<Uso> usoAdapter = new ArrayAdapter<>(spinnerUso.getContext(), android.R.layout.simple_spinner_item);
+            // Asignar los adaptadores a los spinners
+            spinnerTipo.setAdapter(tipoAdapter);
+            spinnerUso.setAdapter(usoAdapter);
             String token = ApiClient.leerToken(getApplication());
             if (token != null) {
                 ApiClient.MisEndPoints api = ApiClient.getEndPoints();
@@ -126,9 +129,9 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                         if (response.isSuccessful()) {
                             response.body().forEach(tipo -> {
                                 tipoAdapter.add(tipo);
-                                spinnerT.setSelection(tipoAdapter.getPosition(tipo));
+                                spinnerTipo.setSelection(tipoAdapter.getPosition(tipo));
                             });
-                            spinnerT.setSelection(0);
+                            spinnerTipo.setSelection(0);
                         } else {
                             Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
                             Log.d("salida", response.message());
@@ -141,10 +144,6 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                     }
                 });
             }
-            Spinner spinnerU = new Spinner(context);
-            spinnerU.setEnabled(true);
-            ArrayAdapter<Uso> usoAdapter = new ArrayAdapter<>(spinnerU.getContext(), android.R.layout.simple_spinner_item);
-            spinnerU.setAdapter(usoAdapter);
             ApiClient.MisEndPoints api = ApiClient.getEndPoints();
             Call<List<Uso>> call = api.obtenerUsos(token);
             call.enqueue(new Callback<List<Uso>>() {
@@ -153,9 +152,9 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                     if (response.isSuccessful()) {
                         response.body().forEach(uso -> {
                             usoAdapter.add(uso);
-                            spinnerU.setSelection(usoAdapter.getPosition(uso));
+                            spinnerUso.setSelection(usoAdapter.getPosition(uso));
                         });
-                        spinnerU.setSelection(0);
+                        spinnerUso.setSelection(0);
                     } else {
                         Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
                         Log.d("salida", response.message());
@@ -256,26 +255,25 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         return uso[0];
     }
 
-    public void agregarInmueble(String boton, Inmueble inmueble, String ambientes, String direccion, String precio, Spinner spinnerT, Spinner spinnerU) {
-        if (boton.equals("Agregrar inmueble")) {
-            mGuardar.setValue("Guardar inmueble");
-            mHabilitar.setValue(true);
-            spinnerT.setEnabled(true);
-            ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(spinnerT.getContext(), android.R.layout.simple_spinner_item);
-            spinnerT.setAdapter(tipoAdapter);
+    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, View view) {
+        if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
+            Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();
+        } else {
+            mHabilitar.setValue(false);
             String token = ApiClient.leerToken(getApplication());
             if (token != null) {
                 ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-                Call<List<Tipo>> call = api.obtenerTipos(token);
-                call.enqueue(new Callback<List<Tipo>>() {
+                inmueble.setAmbientes(Integer.parseInt(ambientes));
+                inmueble.setDireccion(direccion);
+                inmueble.setPrecio(Double.valueOf(precio));
+                Call<Inmueble> call = api.agregarInmueble(token, inmueble);
+                call.enqueue(new Callback<Inmueble>() {
                     @Override
-                    public void onResponse(Call<List<Tipo>> call, Response<List<Tipo>> response) {
+                    public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
                         if (response.isSuccessful()) {
-                            response.body().forEach(tipo -> {
-                                tipoAdapter.add(tipo);
-                                spinnerT.setSelection(tipoAdapter.getPosition(tipo));
-                            });
-                            spinnerT.setSelection(0);
+                            Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
+                            NavController navController = Navigation.findNavController(view);
+                            navController.navigate(R.id.action_nav_inmueble_to_nav_lista);
                         } else {
                             Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
                             Log.d("salida", response.message());
@@ -283,93 +281,13 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Tipo>> call, Throwable throwable) {
+                    public void onFailure(Call<Inmueble> call, Throwable throwable) {
                         Log.d("salida", "Falla: " + throwable.getMessage());
                     }
                 });
-            }
-            spinnerU.setEnabled(true);
-            ArrayAdapter<Uso> usoAdapter = new ArrayAdapter<>(spinnerU.getContext(), android.R.layout.simple_spinner_item);
-            spinnerU.setAdapter(usoAdapter);
-            ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-            Call<List<Uso>> call = api.obtenerUsos(token);
-            call.enqueue(new Callback<List<Uso>>() {
-                @Override
-                public void onResponse(Call<List<Uso>> call, Response<List<Uso>> response) {
-                    if (response.isSuccessful()) {
-                        response.body().forEach(uso -> {
-                            usoAdapter.add(uso);
-                            spinnerU.setSelection(usoAdapter.getPosition(uso));
-                        });
-                        spinnerU.setSelection(0);
-                    } else {
-                        Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
-                        Log.d("salida", response.message());
-                    }
-                }
-                @Override
-                public void onFailure(Call<List<Uso>> call, Throwable throwable) {
-                    Log.d("salida", "Falla: " + throwable.getMessage());
-                }
-            });
-        } else {
-            if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
-                Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();
-            } else {
-                mGuardar.setValue("Agregrar inmueble");
-                mHabilitar.setValue(false);
-                String token = ApiClient.leerToken(getApplication());
-                if (token != null) {
-                    ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-                    inmueble.setAmbientes(Integer.parseInt(ambientes));
-                    inmueble.setDireccion(direccion);
-                    inmueble.setPrecio(Double.valueOf(precio));
-                    Call<Inmueble> call = api.agregarInmueble(token, inmueble);
-                    call.enqueue(new Callback<Inmueble>() {
-                        @Override
-                        public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
-                            if (response.isSuccessful()) {
-                                inmueble.setId(9);
-                                Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
-                                Log.d("salida", response.message());
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(Call<Inmueble> call, Throwable throwable) {
-                            Log.d("salida", "Falla: " + throwable.getMessage());
-                        }
-                    });
-                    inmueble.setId(9);
-                    Log.d("inmueble", inmueble.getId()+"");
-                    Log.d("inmueble", inmueble.getAmbientes()+"");
-                    Log.d("inmueble", inmueble.getDireccion());
-                    Log.d("inmueble", inmueble.getPrecio()+"");
-                    Log.d("inmueble", inmueble.getTipoId()+"");
-                    Log.d("inmueble", inmueble.getUsoId()+"");
-                    Call<Inmueble> inmuebleCall = api.obtenerInmueble(token, inmueble.getId());
-                    inmuebleCall.enqueue(new Callback<Inmueble>() {
-                        @Override
-                        public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
-                            if (response.isSuccessful()) {
-                                response.body().setTipo(obtenerTipo(response.body().getTipoId()));
-                                response.body().setUso(obtenerUso(response.body().getUsoId()));
-                                mInmueble.postValue(response.body());
-                            } else {
-                                Toast.makeText(getApplication(), "Falla en la obtención del inmueble", Toast.LENGTH_LONG).show();
-                                Log.d("salida", response.message());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Inmueble> call, Throwable throwable) {
-                            Log.d("salida", "Falla: " + throwable.getMessage());
-                        }
-                    });
-                }
             }
         }
     }
 }
+

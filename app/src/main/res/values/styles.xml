@@ -10,6 +10,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.TextLink">
+        <item name="android:textColor">@color/colorAccent</item>
+        <!-- Otros atributos de estilo según sea necesario -->
+    </style>
+
     <!-- Specific theme for LoginActivity -->
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here -->

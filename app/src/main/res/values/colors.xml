@@ -16,4 +16,9 @@
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorCardBackground">#FAFAFA</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="card_background_color">#FFFFFF</color>
+    <color name="text_primary_color">#000000</color>
+    <color name="text_secondary_color">#666666</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="button_background_color">#009688</color>
 </resources>

@@ -2,6 +2,7 @@ package com.ezediaz.inmobiliaria.ui.inmueble;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +38,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Tipo>> mTipo;
     private MutableLiveData<List<Uso>> mUso;
+    private MutableLiveData<Uri> mUri;
     private Context context;
 
     public InmuebleFragmentViewModel(@NonNull Application application) {
@@ -49,6 +51,13 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
             mInmueble = new MutableLiveData<>();
         }
         return mInmueble;
+    }
+
+    public LiveData<Uri> getMUri() {
+        if (mUri == null) {
+            mUri = new MutableLiveData<>();
+        }
+        return mUri;
     }
 
     public LiveData<Boolean> getMDisponible() {
@@ -84,6 +93,10 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
             mUso = new MutableLiveData<>();
         }
         return mUso;
+    }
+
+    public void cargarUri(Uri uri){
+        mUri.setValue(uri);
     }
 
     public void cargarInmueble(Bundle arguments, Spinner spinnerTipo, Spinner spinnerUso, Button botonAI, Button botonAF) {

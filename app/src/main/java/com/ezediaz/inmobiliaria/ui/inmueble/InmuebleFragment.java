@@ -1,7 +1,9 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -94,10 +97,17 @@ public class InmuebleFragment extends Fragment {
                 binding.btnAgregarInmueble.setText(s);
             }
         });
+
         binding.cbDisponible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vm.cambiarDisponibilidad(binding.cbDisponible.isChecked(), Integer.valueOf(binding.etCodigo.getText().toString()));
+            }
+        });
+        vm.getMUri().observe(getViewLifecycleOwner(), new Observer<Uri>() {
+            @Override
+            public void onChanged(Uri uri) {
+                binding.ivFoto.setImageURI(uri);
             }
         });
         vm.getMHabilitar().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -146,12 +156,27 @@ public class InmuebleFragment extends Fragment {
                 Log.d("salida", "Posición: " + posicionUso);
                 i.setTipoId(posicionTipo);
                 i.setUsoId(posicionUso);
+                // Obtener la imagen como Bitmap desde ivFoto
+                Bitmap bitmap = ((BitmapDrawable) binding.ivFoto.getDrawable()).getBitmap();
+
+                // Convertir el Bitmap a una cadena Base64
+                String base64Image = "base64," + convertBitmapToBase64(bitmap);
+                Log.d("Foto", base64Image);
+                // Establecer la cadena Base64 en la propiedad ImagenUrl del inmueble
+                i.setImagenInmueble(base64Image);
                 //i.setImagenInmueble(binding.ivFoto.getI);
                 vm.agregarInmueble(i, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), getView());
             }
         });
         vm.cargarInmueble(getArguments(), binding.spnTipo, binding.spnUso, binding.btnAgregarInmueble, binding.btnAgregarFoto);
         return root;
+    }
+
+    private String convertBitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // Puedes cambiar el formato y la calidad aquí
+        byte[] byteArrayImage = baos.toByteArray();
+        return Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
     }
 
     @Override
@@ -173,31 +198,12 @@ public class InmuebleFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             binding.ivFoto.setImageURI(photoURI);
+            vm.cargarUri(photoURI);
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             if (selectedImageUri != null) {
                 binding.ivFoto.setImageURI(selectedImageUri);
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (photoURI != null) {
-            outState.putString("photo_uri", photoURI.toString());
-        }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null) {
-            String savedPhotoUri = savedInstanceState.getString("photo_uri");
-            if (savedPhotoUri != null) {
-                photoURI = Uri.parse(savedPhotoUri);
-                Log.d("imagen", photoURI.toString());
-                binding.ivFoto.setImageURI(photoURI);
+                vm.cargarUri(selectedImageUri);
             }
         }
     }
@@ -244,6 +250,26 @@ public class InmuebleFragment extends Fragment {
         String imageFileName = "JPEG_" + System.currentTimeMillis() + "_";
         File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (photoURI != null) {
+            outState.putString("photo_uri", photoURI.toString());
+        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            String savedPhotoUri = savedInstanceState.getString("photo_uri");
+            if (savedPhotoUri != null) {
+                photoURI = Uri.parse(savedPhotoUri);
+                binding.ivFoto.setImageURI(photoURI);
+            }
+        }
     }
 
     @Override

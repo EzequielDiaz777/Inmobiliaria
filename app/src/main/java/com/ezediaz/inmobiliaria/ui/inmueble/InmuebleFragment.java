@@ -1,36 +1,37 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
+
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+//import com.ezediaz.inmobiliaria.;
 import com.ezediaz.inmobiliaria.databinding.FragmentInmuebleBinding;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Tipo;
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,20 +57,6 @@ public class InmuebleFragment extends Fragment {
                 binding.etAmbientes.setText(String.valueOf(inmueble.getAmbientes()));
                 binding.etDireccion.setText(inmueble.getDireccion());
                 binding.etPrecio.setText(String.valueOf(inmueble.getPrecio()));
-                /*Spinner spinnerUso = binding.spnUso;
-                spinnerUso.setEnabled(false);
-                ArrayAdapter<String> usoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                spinnerUso.setAdapter(usoAdapter);
-                String uso = inmueble.getUso().getNombre();
-                usoAdapter.add(uso);
-                spinnerUso.setSelection(usoAdapter.getPosition(uso));
-                Spinner spinnerTipo = binding.spnTipo;
-                spinnerTipo.setEnabled(false);
-                ArrayAdapter<String> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                spinnerTipo.setAdapter(tipoAdapter);
-                String tipo = inmueble.getTipo().getNombre();
-                tipoAdapter.add(tipo);
-                spinnerTipo.setSelection(tipoAdapter.getPosition(tipo));*/
                 binding.cbDisponible.setChecked(inmueble.isEstado());
             }
         });
@@ -86,9 +73,6 @@ public class InmuebleFragment extends Fragment {
                 spinnerTipo.setEnabled(false);
                 ArrayAdapter<String> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
                 spinnerTipo.setAdapter(tipoAdapter);
-                //String tipo = inmueble.getTipo().getNombre();
-                //tipoAdapter.add(tipo);
-                //spinnerTipo.setSelection(tipoAdapter.getPosition(tipo));
             }
         });
         vm.getMGuardar().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -150,63 +134,53 @@ public class InmuebleFragment extends Fragment {
                 Inmueble i = new Inmueble();
                 i.setEstado(false);
                 Log.d("salida", "Tipo: " + binding.spnTipo.getSelectedItem() + 1);
-                int posicionTipo = binding.spnTipo.getSelectedItemPosition()+1;
-                int posicionUso = binding.spnUso.getSelectedItemPosition()+1;
+                int posicionTipo = binding.spnTipo.getSelectedItemPosition() + 1;
+                int posicionUso = binding.spnUso.getSelectedItemPosition() + 1;
                 Log.d("salida", "Posición: " + posicionTipo);
                 Log.d("salida", "Posición: " + posicionUso);
                 i.setTipoId(posicionTipo);
                 i.setUsoId(posicionUso);
-                // Obtener la imagen como Bitmap desde ivFoto
-                Bitmap bitmap = ((BitmapDrawable) binding.ivFoto.getDrawable()).getBitmap();
 
-                // Convertir el Bitmap a una cadena Base64
-                String base64Image = "base64," + convertBitmapToBase64(bitmap);
-                Log.d("Foto", base64Image);
-                // Establecer la cadena Base64 en la propiedad ImagenUrl del inmueble
-                i.setImagenInmueble(base64Image);
-                //i.setImagenInmueble(binding.ivFoto.getI);
+                // Obtener la URI de la imagen desde ivFoto
+                Uri imageUri = vm.getMUri().getValue();
+                if (imageUri != null) {
+                    String base64Image = convertImageUriToBase64(imageUri);
+                    Log.d("Foto", base64Image);
+
+                    // Establecer la cadena Base64 en la propiedad ImagenUrl del inmueble
+                    i.setImagenUrl(base64Image);
+                }
+
+                // Llamar al ViewModel para agregar el inmueble
                 vm.agregarInmueble(i, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), getView());
             }
         });
+
         vm.cargarInmueble(getArguments(), binding.spnTipo, binding.spnUso, binding.btnAgregarInmueble, binding.btnAgregarFoto);
         return root;
     }
 
     private String convertBitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); // Puedes cambiar el formato y la calidad aquí
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] byteArrayImage = baos.toByteArray();
-        return Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+        return "data:image/png;base64," + Base64.encodeToString(byteArrayImage, Base64.NO_WRAP);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dispatchTakePictureIntent();
-            }
-        } else if (requestCode == REQUEST_IMAGE_GALLERY) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dispatchSelectPictureIntent();
-            }
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        return MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), uri);
+    }
+
+    private String convertImageUriToBase64(Uri uri) {
+        try {
+            Bitmap bitmap = getBitmapFromUri(uri);
+            return convertBitmapToBase64(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            binding.ivFoto.setImageURI(photoURI);
-            vm.cargarUri(photoURI);
-        } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
-            Uri selectedImageUri = data.getData();
-            if (selectedImageUri != null) {
-                binding.ivFoto.setImageURI(selectedImageUri);
-                vm.cargarUri(selectedImageUri);
-            }
-        }
-    }
 
     private void openCamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -223,6 +197,25 @@ public class InmuebleFragment extends Fragment {
             dispatchSelectPictureIntent();
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            Uri selectedImageUri = null;
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                selectedImageUri = photoURI;
+            } else if (requestCode == REQUEST_IMAGE_GALLERY && data != null) {
+                selectedImageUri = data.getData();
+            }
+
+            if (selectedImageUri != null) {
+                binding.ivFoto.setImageURI(selectedImageUri);
+                vm.cargarUri(selectedImageUri);
+            }
+        }
+    }
+
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

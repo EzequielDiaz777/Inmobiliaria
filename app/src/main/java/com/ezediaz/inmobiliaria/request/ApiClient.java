@@ -24,7 +24,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public class ApiClient {
-    private static final String URL = "http://192.168.1.2:5000/";
+    public static final String URL = "http://192.168.1.2:5000/";
     private static MisEndPoints mep;
 
     public static MisEndPoints getEndPoints(){
@@ -65,12 +65,6 @@ public class ApiClient {
 
         @GET("Usos")
         Call<List<Uso>> obtenerUsos(@Header("Authorization") String token);
-
-        @GET("Tipos/{id}")
-        Call<Tipo> obtenerTipo(@Header("Authorization") String token, @Path("id") int id);
-
-        @GET("Usos/{id}")
-        Call<Uso> obtenerUso(@Header("Authorization") String token, @Path("id") int id);
 
         @POST("Inmuebles")
         Call<Inmueble> agregarInmueble(@Header("Authorization") String token,  @Body Inmueble inmueble);

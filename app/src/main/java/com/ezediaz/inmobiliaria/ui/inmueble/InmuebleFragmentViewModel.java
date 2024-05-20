@@ -212,62 +212,6 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         }
     }
 
-    public Tipo obtenerTipo(int id) {
-        final Tipo[] tipo = new Tipo[1];
-        String token = ApiClient.leerToken(getApplication());
-        if (token != null) {
-            ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-            Call<Tipo> call = api.obtenerTipo(token, id);
-            call.enqueue(new Callback<Tipo>() {
-                @Override
-                public void onResponse(Call<Tipo> call, Response<Tipo> response) {
-                    if (response.isSuccessful()) {
-                        tipo[0] = response.body();
-                    } else {
-                        Toast.makeText(getApplication(), "Falla en la recuperación del tipo de inmueble", Toast.LENGTH_LONG).show();
-                        Log.d("salida", response.message());
-                        tipo[0] = null;
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Tipo> call, Throwable throwable) {
-                    Log.d("salida", "Falla: " + throwable.getMessage());
-                    tipo[0] = null;
-                }
-            });
-        }
-        return tipo[0];
-    }
-
-    private Uso obtenerUso(int id) {
-        final Uso[] uso = new Uso[1];
-        String token = ApiClient.leerToken(getApplication());
-        if (token != null) {
-            ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-            Call<Uso> call = api.obtenerUso(token, id);
-            call.enqueue(new Callback<Uso>() {
-                @Override
-                public void onResponse(Call<Uso> call, Response<Uso> response) {
-                    if (response.isSuccessful()) {
-                        uso[0] = response.body();
-                    } else {
-                        Toast.makeText(getApplication(), "Falla en la recuperación del uso de inmueble", Toast.LENGTH_LONG).show();
-                        uso[0] = null;
-                        Log.d("salida", response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Uso> call, Throwable throwable) {
-                    uso[0] = null;
-                    Log.d("salida", "Falla: " + throwable.getMessage());
-                }
-            });
-        }
-        return uso[0];
-    }
-
     public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, View view) {
         if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
             Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();

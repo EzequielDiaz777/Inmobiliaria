@@ -1,21 +1,25 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.request.ApiClient;
-
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import retrofit2.Call;
@@ -25,7 +29,9 @@ import retrofit2.Response;
 public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHolderPepe> {
     private List<Inmueble> listaDeInmuebles;
     private LayoutInflater li;
-    public InmuebleAdapter(List<Inmueble> listaDeInmuebles,  LayoutInflater li) {
+    private Context context;
+
+    public InmuebleAdapter(List<Inmueble> listaDeInmuebles, LayoutInflater li) {
         this.listaDeInmuebles = listaDeInmuebles;
         this.li = li;
     }
@@ -34,6 +40,7 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
     @Override
     public ViewHolderPepe onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = li.inflate(R.layout.item_inmueble, parent, false);
+        context = parent.getContext();
         return new ViewHolderPepe(view);
     }
 
@@ -42,30 +49,26 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
         Inmueble inmueble = listaDeInmuebles.get(position);
         holder.precio.setText(String.valueOf(inmueble.getPrecio()));
         holder.direccion.setText(inmueble.getDireccion());
-        //holder.foto.setImageResource(inmueble.getImagenInmueble());
+        // Corregir el formato de la URL de la imagen
+        String imageUrl = ApiClient.URL+inmueble.getImagenUrl();
+        // Cargar la imagen del inmueble usando Glide
+        Log.d("imagen", imageUrl);
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
+                .error(R.drawable.icon_logout); // Imagen de error
+        // Utiliza Glide para cargar y mostrar la imagen
+        Glide.with(context)
+                .load(imageUrl) // Especifica la URL de la imagen
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
+                .apply(options)
+                .into(holder.foto); // Especifica el ImageView donde se mostrará la imagen
         holder.btnVerMas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                String token = ApiClient.leerToken(li.getContext());
-                ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-                Call<Inmueble> call = api.obtenerInmueble(token, inmueble.getId());
-                call.enqueue(new Callback<Inmueble>() {
-                    @Override
-                    public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
-                        if(response.isSuccessful()){
-                            bundle.putBoolean("desdeVerMas", true); // Enviar el parámetro
-                            bundle.putSerializable("inmueble", response.body());
-                            Navigation.findNavController(v).navigate(R.id.nav_inmueble, bundle);
-                        } else {
-                            Log.d("salida", response.message());
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<Inmueble> call, Throwable throwable) {
-                        Log.d("salida", "Falla: " + throwable.getMessage());
-                    }
-                });
+                bundle.putBoolean("desdeVerMas", true); // Enviar el parámetro
+                bundle.putSerializable("inmueble", inmueble);
+                Navigation.findNavController(v).navigate(R.id.nav_inmueble, bundle);
             }
         });
     }
@@ -77,12 +80,12 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
 
     public class ViewHolderPepe extends RecyclerView.ViewHolder {
         TextView precio, direccion;
-        //ImageView foto;
+        ImageView foto;
         Button btnVerMas;
 
         public ViewHolderPepe(@NonNull View itemView) {
             super(itemView);
-            //foto = itemView.findViewById(R.id.ivImagenInm);
+            foto = itemView.findViewById(R.id.ivImagenInm);
             direccion = itemView.findViewById(R.id.tvDireccionInm);
             precio = itemView.findViewById(R.id.tvPrecioInm);
             btnVerMas = itemView.findViewById(R.id.btnVerMas);

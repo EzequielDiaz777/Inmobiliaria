@@ -16,6 +16,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Agrega un ImageView para mostrar la imagen -->
+        <ImageView
+            android:id="@+id/ivImagenInm"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_inmuebles"
+        />
+
         <TextView
             android:id="@+id/tvDireccionInm"
             android:layout_width="match_parent"

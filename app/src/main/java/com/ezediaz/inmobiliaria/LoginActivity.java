@@ -3,6 +3,7 @@ package com.ezediaz.inmobiliaria;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,16 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pedirPermisos();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        // Obtener el ancho y el alto de la pantalla en píxeles
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
+
+        // Imprimir los valores para verlos en el Logcat
+        System.out.println("Ancho de la pantalla: " + width);
+        System.out.println("Alto de la pantalla: " + height);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         vm = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(LoginActivityViewModel.class);

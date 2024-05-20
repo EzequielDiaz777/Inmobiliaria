@@ -1,5 +1,4 @@
 package com.ezediaz.inmobiliaria.model;
-
 import java.io.Serializable;
 
 public class Inmueble implements Serializable {
@@ -14,7 +13,7 @@ public class Inmueble implements Serializable {
     private Propietario duenio;
     private Tipo tipo;
     private Uso uso;
-    private int imagenInmueble;
+    private String imagenInmueble;
 
     public Inmueble(int id, int propietarioId, int tipoId, int usoId, String direccion, int ambientes, double precio, boolean estado, Propietario duenio, Tipo tipo, Uso uso) {
         this.id = id;
@@ -30,7 +29,7 @@ public class Inmueble implements Serializable {
         this.uso = uso;
     }
 
-    public Inmueble(int id, int propietarioId, int tipoId, int usoId, String direccion, int ambientes, double precio, boolean estado, Propietario duenio, Tipo tipo, Uso uso, int imagenInmueble) {
+    public Inmueble(int id, int propietarioId, int tipoId, int usoId, String direccion, int ambientes, double precio, boolean estado, Propietario duenio, Tipo tipo, Uso uso, String imagenInmueble) {
         this.id = id;
         this.propietarioId = propietarioId;
         this.tipoId = tipoId;
@@ -45,11 +44,11 @@ public class Inmueble implements Serializable {
         this.imagenInmueble = imagenInmueble;
     }
 
-    public int getImagenInmueble() {
+    public String getImagenInmueble() {
         return imagenInmueble;
     }
 
-    public void setImagenInmueble(int imagenInmueble) {
+    public void setImagenInmueble(String imagenInmueble) {
         this.imagenInmueble = imagenInmueble;
     }
 

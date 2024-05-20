@@ -26,7 +26,6 @@ public class LoginActivityViewModel extends AndroidViewModel {
 
     public void logueo(String usuario, String clave) {
         ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-
         Call<String> call = api.login(usuario, clave);
         call.enqueue(new Callback<String>() {
             @Override

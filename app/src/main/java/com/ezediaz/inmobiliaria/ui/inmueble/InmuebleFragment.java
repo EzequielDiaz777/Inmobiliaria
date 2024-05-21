@@ -29,9 +29,15 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 //import com.ezediaz.inmobiliaria.;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.databinding.FragmentInmuebleBinding;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Tipo;
+import com.ezediaz.inmobiliaria.model.Uso;
+import com.ezediaz.inmobiliaria.request.ApiClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,11 +45,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class InmuebleFragment extends Fragment {
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
     private FragmentInmuebleBinding binding;
     private InmuebleFragmentViewModel vm;
-    private Uri photoURI;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +62,15 @@ public class InmuebleFragment extends Fragment {
                 binding.etDireccion.setText(inmueble.getDireccion());
                 binding.etPrecio.setText(String.valueOf(inmueble.getPrecio()));
                 binding.cbDisponible.setChecked(inmueble.isEstado());
+                RequestOptions options = new RequestOptions()
+                        .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
+                        .error(R.drawable.icon_logout); // Imagen de error
+                // Utiliza Glide para cargar y mostrar la imagen
+                Glide.with(getContext())
+                        .load(ApiClient.URL+inmueble.getImagenUrl()) // Especifica la URL de la imagen
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
+                        .apply(options)
+                        .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
             }
         });
         vm.getMDisponible().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -66,66 +79,70 @@ public class InmuebleFragment extends Fragment {
                 binding.cbDisponible.setChecked(disponible);
             }
         });
-        vm.getMTipo().observe(getViewLifecycleOwner(), new Observer<List<Tipo>>() {
+        vm.getMTipo().observe(getViewLifecycleOwner(), new Observer<Tipo>() {
+            @Override
+            public void onChanged(Tipo tipo) {
+                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
+                binding.spnTipo.setAdapter(tipoAdapter);
+                tipoAdapter.add(tipo);
+                binding.spnTipo.setSelection(tipoAdapter.getPosition(tipo));
+            }
+        });
+        vm.getMUso().observe(getViewLifecycleOwner(), new Observer<Uso>() {
+            @Override
+            public void onChanged(Uso uso) {
+                ArrayAdapter<Uso> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
+                binding.spnUso.setAdapter(tipoAdapter);
+                tipoAdapter.add(uso);
+                binding.spnUso.setSelection(tipoAdapter.getPosition(uso));
+            }
+        });
+        vm.getMListaTipo().observe(getViewLifecycleOwner(), new Observer<List<Tipo>>() {
             @Override
             public void onChanged(List<Tipo> tipos) {
-                Spinner spinnerTipo = binding.spnTipo;
-                spinnerTipo.setEnabled(false);
-                ArrayAdapter<String> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                spinnerTipo.setAdapter(tipoAdapter);
+                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
+                binding.spnTipo.setAdapter(tipoAdapter);
+                tipoAdapter.addAll(tipos);
             }
         });
-        vm.getMGuardar().observe(getViewLifecycleOwner(), new Observer<String>() {
+        vm.getMListaUso().observe(getViewLifecycleOwner(), new Observer<List<Uso>>() {
             @Override
-            public void onChanged(String s) {
-                binding.btnAgregarInmueble.setText(s);
+            public void onChanged(List<Uso> usos) {
+                ArrayAdapter<Uso> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
+                binding.spnUso.setAdapter(tipoAdapter);
+                tipoAdapter.addAll(usos);
             }
         });
-
+        vm.getMTextos().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                binding.etDireccion.setText(aBoolean ? "" : binding.etDireccion.getText().toString());
+                binding.etAmbientes.setText(aBoolean ? "" : binding.etAmbientes.getText().toString());
+                binding.etPrecio.setText(aBoolean ? "" : binding.etPrecio.getText().toString());
+            }
+        });
+        vm.getMHabilitar().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                binding.cbDisponible.setEnabled(!aBoolean);
+                binding.cbDisponible.setChecked(!aBoolean);
+                binding.etAmbientes.setEnabled(aBoolean);
+                binding.etDireccion.setEnabled(aBoolean);
+                binding.etPrecio.setEnabled(aBoolean);
+                binding.btnAgregarInmueble.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
+                binding.btnAgregarFoto.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
+            }
+        });
         binding.cbDisponible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vm.cambiarDisponibilidad(binding.cbDisponible.isChecked(), Integer.valueOf(binding.etCodigo.getText().toString()));
             }
         });
-        vm.getMUri().observe(getViewLifecycleOwner(), new Observer<Uri>() {
-            @Override
-            public void onChanged(Uri uri) {
-                binding.ivFoto.setImageURI(uri);
-            }
-        });
-        vm.getMHabilitar().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                binding.etCodigo.setText("");
-                binding.etDireccion.setText("");
-                binding.etAmbientes.setText("");
-                binding.etPrecio.setText("");
-                binding.cbDisponible.setEnabled(!aBoolean);
-                binding.cbDisponible.setChecked(!aBoolean);
-                binding.etAmbientes.setEnabled(aBoolean);
-                binding.etDireccion.setEnabled(aBoolean);
-                binding.etPrecio.setEnabled(aBoolean);
-                binding.spnTipo.setEnabled(aBoolean);
-                binding.spnUso.setEnabled(aBoolean);
-            }
-        });
         binding.btnAgregarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                builder.setTitle("Select Image Source");
-                builder.setItems(new CharSequence[]{"Camera", "Gallery"}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            openCamera();
-                        } else {
-                            openGallery();
-                        }
-                    }
-                });
-                builder.show();
+                openGallery();
             }
         });
         binding.btnAgregarInmueble.setOnClickListener(new View.OnClickListener() {
@@ -133,30 +150,12 @@ public class InmuebleFragment extends Fragment {
             public void onClick(View v) {
                 Inmueble i = new Inmueble();
                 i.setEstado(false);
-                Log.d("salida", "Tipo: " + binding.spnTipo.getSelectedItem() + 1);
-                int posicionTipo = binding.spnTipo.getSelectedItemPosition() + 1;
-                int posicionUso = binding.spnUso.getSelectedItemPosition() + 1;
-                Log.d("salida", "Posición: " + posicionTipo);
-                Log.d("salida", "Posición: " + posicionUso);
-                i.setTipoId(posicionTipo);
-                i.setUsoId(posicionUso);
-
-                // Obtener la URI de la imagen desde ivFoto
-                Uri imageUri = vm.getMUri().getValue();
-                if (imageUri != null) {
-                    String base64Image = convertImageUriToBase64(imageUri);
-                    Log.d("Foto", base64Image);
-
-                    // Establecer la cadena Base64 en la propiedad ImagenUrl del inmueble
-                    i.setImagenUrl(base64Image);
-                }
-
-                // Llamar al ViewModel para agregar el inmueble
+                i.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
+                i.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
                 vm.agregarInmueble(i, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), getView());
             }
         });
-
-        vm.cargarInmueble(getArguments(), binding.spnTipo, binding.spnUso, binding.btnAgregarInmueble, binding.btnAgregarFoto);
+        vm.cargarInmueble(getArguments());
         return root;
     }
 
@@ -171,22 +170,12 @@ public class InmuebleFragment extends Fragment {
         return MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), uri);
     }
 
-    private String convertImageUriToBase64(Uri uri) {
+    private Bitmap convertImageUriToBase64(Uri uri) {
         try {
-            Bitmap bitmap = getBitmapFromUri(uri);
-            return convertBitmapToBase64(bitmap);
+            return getBitmapFromUri(uri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-
-    private void openCamera() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
-        } else {
-            dispatchTakePictureIntent();
         }
     }
 
@@ -203,33 +192,12 @@ public class InmuebleFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             Uri selectedImageUri = null;
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                selectedImageUri = photoURI;
-            } else if (requestCode == REQUEST_IMAGE_GALLERY && data != null) {
+            if (requestCode == REQUEST_IMAGE_GALLERY && data != null) {
                 selectedImageUri = data.getData();
             }
-
             if (selectedImageUri != null) {
                 binding.ivFoto.setImageURI(selectedImageUri);
-                vm.cargarUri(selectedImageUri);
-            }
-        }
-    }
-
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Handle error
-            }
-            if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(requireContext(), "com.ezediaz.inmobiliaria.provider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                //vm.(selectedImageUri);
             }
         }
     }
@@ -238,29 +206,12 @@ public class InmuebleFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
-
-    private File createImageFile() throws IOException {
-        String imageFileName = "JPEG_" + System.currentTimeMillis() + "_";
-        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
-    }
-
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (photoURI != null) {
-            outState.putString("photo_uri", photoURI.toString());
-        }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null) {
-            String savedPhotoUri = savedInstanceState.getString("photo_uri");
-            if (savedPhotoUri != null) {
-                photoURI = Uri.parse(savedPhotoUri);
-                binding.ivFoto.setImageURI(photoURI);
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+        if (requestCode == REQUEST_IMAGE_GALLERY) {
+            if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
+                startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
             }
         }
     }

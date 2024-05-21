@@ -1,5 +1,7 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
 
+import static java.security.AccessController.getContext;
+
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
@@ -33,17 +35,16 @@ import retrofit2.Response;
 public class InmuebleFragmentViewModel extends AndroidViewModel {
     private MutableLiveData<Inmueble> mInmueble;
     private MutableLiveData<Boolean> mDisponible;
-    private MutableLiveData<String> mGuardar;
     private MutableLiveData<Boolean> mHabilitar;
 
-    private MutableLiveData<List<Tipo>> mTipo;
-    private MutableLiveData<List<Uso>> mUso;
-    private MutableLiveData<Uri> mUri;
-    private Context context;
+    private MutableLiveData<List<Tipo>> mListaTipo;
+    private MutableLiveData<List<Uso>> mListaUso;
+    private MutableLiveData<Boolean> mTextos;
+    private MutableLiveData<Tipo> mTipo;
+    private MutableLiveData<Uso> mUso;
 
     public InmuebleFragmentViewModel(@NonNull Application application) {
         super(application);
-        context = application.getApplicationContext();
     }
 
     public LiveData<Inmueble> getMInmueble() {
@@ -53,13 +54,6 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         return mInmueble;
     }
 
-    public LiveData<Uri> getMUri() {
-        if (mUri == null) {
-            mUri = new MutableLiveData<>();
-        }
-        return mUri;
-    }
-
     public LiveData<Boolean> getMDisponible() {
         if (mDisponible == null) {
             mDisponible = new MutableLiveData<>();
@@ -67,11 +61,11 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         return mDisponible;
     }
 
-    public LiveData<String> getMGuardar() {
-        if (mGuardar == null) {
-            mGuardar = new MutableLiveData<>();
+    public LiveData<Boolean> getMTextos() {
+        if (mTextos == null) {
+            mTextos = new MutableLiveData<>();
         }
-        return mGuardar;
+        return mTextos;
     }
 
     public LiveData<Boolean> getMHabilitar() {
@@ -81,106 +75,95 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         return mHabilitar;
     }
 
-    public LiveData<List<Tipo>> getMTipo() {
+    public LiveData<List<Tipo>> getMListaTipo() {
+        if (mListaTipo == null) {
+            mListaTipo = new MutableLiveData<>();
+        }
+        return mListaTipo;
+    }
+
+    public LiveData<List<Uso>> getMListaUso() {
+        if (mListaUso == null) {
+            mListaUso = new MutableLiveData<>();
+        }
+        return mListaUso;
+    }
+
+    public LiveData<Tipo> getMTipo() {
         if (mTipo == null) {
             mTipo = new MutableLiveData<>();
         }
         return mTipo;
     }
 
-    public LiveData<List<Uso>> getMUso() {
+    public LiveData<Uso> getMUso() {
         if (mUso == null) {
             mUso = new MutableLiveData<>();
         }
         return mUso;
     }
 
-    public void cargarUri(Uri uri){
-        mUri.setValue(uri);
+    private void cargarTipos() {
+        String token = ApiClient.leerToken(getApplication());
+        ApiClient.MisEndPoints api = ApiClient.getEndPoints();
+        Call<List<Tipo>> call = api.obtenerTipos(token);
+        call.enqueue(new Callback<List<Tipo>>() {
+            @Override
+            public void onResponse(Call<List<Tipo>> call, Response<List<Tipo>> response) {
+                if (response.isSuccessful()) {
+                    mListaTipo.setValue(response.body());
+                } else {
+                    Toast.makeText(getApplication(), "Falla en la obtención de los tipos de inmueble", Toast.LENGTH_LONG).show();
+                    Log.d("salida", response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Tipo>> call, Throwable t) {
+                Toast.makeText(getApplication(), "Falla en la obtención de los tipos de inmueble", Toast.LENGTH_LONG).show();
+                Log.d("salida", t.getMessage());
+            }
+        });
     }
 
-    public void cargarInmueble(Bundle arguments, Spinner spinnerTipo, Spinner spinnerUso, Button botonAI, Button botonAF) {
-        Inmueble inmueble = new Inmueble();
+    private void cargarUsos() {
+        String token = ApiClient.leerToken(getApplication());
+        ApiClient.MisEndPoints api = ApiClient.getEndPoints();
+        Call<List<Uso>> call = api.obtenerUsos(token);
+        call.enqueue(new Callback<List<Uso>>() {
+            @Override
+            public void onResponse(Call<List<Uso>> call, Response<List<Uso>> response) {
+                if (response.isSuccessful()) {
+                    mListaUso.setValue(response.body());
+                } else {
+                    Toast.makeText(getApplication(), "Falla en la obtención de los usos de inmueble", Toast.LENGTH_LONG).show();
+                    Log.d("salida", response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Uso>> call, Throwable t) {
+                Toast.makeText(getApplication(), "Falla en la obtención de los usos de inmueble", Toast.LENGTH_LONG).show();
+                Log.d("salida", t.getMessage());
+            }
+        });
+    }
+
+    public void cargarInmueble(Bundle arguments) {
         if (arguments != null) {
-            inmueble = (Inmueble) arguments.getSerializable("inmueble");
-            // Obtener el tipo y uso del inmueble
-            Tipo tipoInmueble = inmueble.getTipo();
-            Uso usoInmueble = inmueble.getUso();
-            // Crear adaptadores para los spinners
-            ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(spinnerTipo.getContext(), android.R.layout.simple_spinner_item);
-            ArrayAdapter<Uso> usoAdapter = new ArrayAdapter<>(spinnerUso.getContext(), android.R.layout.simple_spinner_item);
-            // Asignar los adaptadores a los spinners
-            spinnerTipo.setAdapter(tipoAdapter);
-            spinnerUso.setAdapter(usoAdapter);
-            // Verificar si el tipo y el uso del inmueble no son nulos
-            if (tipoInmueble != null && usoInmueble != null) {
-                // Agregar el tipo y el uso del inmueble a los adaptadores
-                tipoAdapter.add(tipoInmueble);
-                usoAdapter.add(usoInmueble);
-                // Establecer la selección en los spinners
-                spinnerTipo.setSelection(0);
-                spinnerUso.setSelection(0);
-            }
-            botonAI.setVisibility(View.GONE);
-            botonAF.setVisibility(View.GONE);
+            Inmueble inmueble = (Inmueble) arguments.getSerializable("inmueble");
+            mTipo.setValue(inmueble.getTipo());
+            mUso.setValue(inmueble.getUso());
+            mHabilitar.setValue(false);
+            mTextos.setValue(false);
+            mInmueble.setValue(inmueble);
         } else {
-            botonAI.setVisibility(View.VISIBLE);
-            botonAF.setVisibility(View.VISIBLE);
+            cargarTipos();
+            cargarUsos();
             mHabilitar.setValue(true);
-            ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(spinnerTipo.getContext(), android.R.layout.simple_spinner_item);
-            ArrayAdapter<Uso> usoAdapter = new ArrayAdapter<>(spinnerUso.getContext(), android.R.layout.simple_spinner_item);
-            // Asignar los adaptadores a los spinners
-            spinnerTipo.setAdapter(tipoAdapter);
-            spinnerUso.setAdapter(usoAdapter);
-            String token = ApiClient.leerToken(getApplication());
-            if (token != null) {
-                ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-                Call<List<Tipo>> call = api.obtenerTipos(token);
-                call.enqueue(new Callback<List<Tipo>>() {
-                    @Override
-                    public void onResponse(Call<List<Tipo>> call, Response<List<Tipo>> response) {
-                        if (response.isSuccessful()) {
-                            response.body().forEach(tipo -> {
-                                tipoAdapter.add(tipo);
-                                spinnerTipo.setSelection(tipoAdapter.getPosition(tipo));
-                            });
-                            spinnerTipo.setSelection(0);
-                        } else {
-                            Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
-                            Log.d("salida", response.message());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<Tipo>> call, Throwable throwable) {
-                        Log.d("salida", "Falla: " + throwable.getMessage());
-                    }
-                });
-            }
-            ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-            Call<List<Uso>> call = api.obtenerUsos(token);
-            call.enqueue(new Callback<List<Uso>>() {
-                @Override
-                public void onResponse(Call<List<Uso>> call, Response<List<Uso>> response) {
-                    if (response.isSuccessful()) {
-                        response.body().forEach(uso -> {
-                            usoAdapter.add(uso);
-                            spinnerUso.setSelection(usoAdapter.getPosition(uso));
-                        });
-                        spinnerUso.setSelection(0);
-                    } else {
-                        Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
-                        Log.d("salida", response.message());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Uso>> call, Throwable throwable) {
-                    Log.d("salida", "Falla: " + throwable.getMessage());
-                }
-            });
+            mTextos.setValue(true);
+            mInmueble.setValue(new Inmueble());
         }
-        mInmueble.setValue(inmueble);
     }
 
     public void cambiarDisponibilidad(boolean disponible, int id) {
@@ -212,7 +195,8 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         }
     }
 
-    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, View view) {
+    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String
+            precio, View view) {
         if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
             Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();
         } else {

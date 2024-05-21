@@ -6,7 +6,7 @@
     app:startDestination="@+id/nav_lista">
 
     <fragment
-        android:id="@+id/nav_mapa_2"
+        android:id="@+id/nav_mapa"
         android:name="com.ezediaz.inmobiliaria.ui.mapa.MapaFragment"
         android:label="Inicio"
         tools:layout="@layout/fragment_mapa" />

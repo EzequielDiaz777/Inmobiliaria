@@ -60,11 +60,11 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/tvUso"
+        android:id="@+id/tvTipo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="31dp"
-        android:text="Uso:"
+        android:text="Tipo:"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textStyle="bold"
@@ -72,16 +72,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPrecio" />
 
     <TextView
-        android:id="@+id/tvTipo"
+        android:id="@+id/tvUso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Tipo:"
+        android:text="Uso:"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUso" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTipo" />
 
     <CheckBox
         android:id="@+id/cbDisponible"
@@ -93,7 +93,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvFoto"
-        app:layout_constraintTop_toBottomOf="@+id/spnTipo"
+        app:layout_constraintTop_toBottomOf="@+id/spnUso"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -105,7 +105,7 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTipo" />
+        app:layout_constraintTop_toBottomOf="@+id/tvUso" />
 
     <TextView
         android:id="@+id/tvFoto"
@@ -196,7 +196,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etDireccion" />
 
     <Spinner
-        android:id="@+id/spnUso"
+        android:id="@+id/spnTipo"
         android:layout_width="338dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
@@ -208,7 +208,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etPrecio" />
 
     <Spinner
-        android:id="@+id/spnTipo"
+        android:id="@+id/spnUso"
         android:layout_width="338dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -217,7 +217,7 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spnUso" />
+        app:layout_constraintTop_toBottomOf="@+id/spnTipo" />
 
     <ImageView
         android:id="@+id/ivFoto"

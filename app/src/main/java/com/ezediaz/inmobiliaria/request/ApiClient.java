@@ -11,6 +11,8 @@ import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,8 +21,10 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public class ApiClient {
@@ -66,8 +70,19 @@ public class ApiClient {
         @GET("Usos")
         Call<List<Uso>> obtenerUsos(@Header("Authorization") String token);
 
+        @Multipart
         @POST("Inmuebles")
-        Call<Inmueble> agregarInmueble(@Header("Authorization") String token,  @Body Inmueble inmueble);
+        Call<Inmueble> agregarInmueble(
+                @Header("Authorization") String token,
+                @Part("propietarioId") RequestBody propietarioId,
+                @Part("tipoId") RequestBody tipoId,
+                @Part("usoId") RequestBody usoId,
+                @Part("direccion") RequestBody direccion,
+                @Part("ambientes") RequestBody ambientes,
+                @Part("precio") RequestBody precio,
+                @Part("estado") RequestBody estado,
+                @Part MultipartBody.Part imagen
+        );
     }
 
     public static void guardarToken(String token, Context context) {

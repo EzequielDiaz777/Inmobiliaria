@@ -5,18 +5,26 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
 import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
 import com.ezediaz.inmobiliaria.request.ApiClient;
+
+import java.io.File;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -156,6 +164,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
     }
 
     public void cambiarDisponibilidad(boolean disponible, int id) {
+        Log.d("salida", String.valueOf(disponible));
         String token = ApiClient.leerToken(getApplication());
         if (token != null) {
             ApiClient.MisEndPoints api = ApiClient.getEndPoints();
@@ -184,37 +193,55 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         }
     }
 
-    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, View view) {
+    public void controlarExtension(File imagen){
+
+    }
+    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, File imagenFile, View view) {
         if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
             Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();
+        } else if (imagenFile == null) {
+            Toast.makeText(getApplication(), "Debe elegirse una imagen antes de dar de guardar el inmueble", Toast.LENGTH_LONG).show();
         } else {
-            mHabilitar.setValue(false);
-            String token = ApiClient.leerToken(getApplication());
-            if (token != null) {
-                ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-                inmueble.setAmbientes(Integer.parseInt(ambientes));
-                inmueble.setDireccion(direccion);
-                inmueble.setPrecio(Double.valueOf(precio));
-                Call<Inmueble> call = api.agregarInmueble(token, inmueble);
-                call.enqueue(new Callback<Inmueble>() {
-                    @Override
-                    public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
-                        if (response.isSuccessful()) {
-                            Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
-                            NavController navController = Navigation.findNavController(view);
-                            navController.navigate(R.id.action_nav_inmueble_to_nav_lista);
-                        } else {
-                            Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
-                            Log.d("salida", response.message());
+            String[] parts = imagenFile.getName().split("\\.");
+            String extension2 = parts[1];
+            if (!extension2.equals("jpg") && !extension2.equals("png")) {
+                Toast.makeText(getApplication(), "La imagen debe ser .jpg o .png antes de dar de guardar el inmueble", Toast.LENGTH_LONG).show();
+            } else {
+                String token = ApiClient.leerToken(getApplication());
+                if (token != null) {
+                    ApiClient.MisEndPoints api = ApiClient.getEndPoints();
+                    // Convertir campos a RequestBody
+                    RequestBody propietarioId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.getPropietarioId()));
+                    RequestBody tipoId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.getTipoId()));
+                    RequestBody usoId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.getUsoId()));
+                    RequestBody direccionBody = RequestBody.create(MediaType.parse("text/plain"), direccion);
+                    RequestBody ambientesBody = RequestBody.create(MediaType.parse("text/plain"), ambientes);
+                    RequestBody precioBody = RequestBody.create(MediaType.parse("text/plain"), precio);
+                    RequestBody estado = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.isEstado()));
+                    // Crear MultipartBody.Part para la imagen
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imagenFile);
+                    MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", imagenFile.getName(), requestFile);
+                    // Realizar la llamada a la API
+                    Call<Inmueble> call = api.agregarInmueble(token, propietarioId, tipoId, usoId, direccionBody, ambientesBody, precioBody, estado, imagenPart);
+                    call.enqueue(new Callback<Inmueble>() {
+                        @Override
+                        public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
+                                NavController navController = Navigation.findNavController(view);
+                                navController.navigate(R.id.action_nav_inmueble_to_nav_lista);
+                            } else {
+                                Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
+                                Log.d("salida", response.message());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Inmueble> call, Throwable throwable) {
-                        Log.d("salida", "Falla: " + throwable.getMessage());
-                    }
-                });
-
+                        @Override
+                        public void onFailure(Call<Inmueble> call, Throwable throwable) {
+                            Log.d("salida", "Falla: " + throwable.getMessage());
+                        }
+                    });
+                }
             }
         }
     }

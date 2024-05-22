@@ -1,4 +1,5 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -16,16 +18,19 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -45,8 +50,7 @@ public class InmuebleFragment extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
     private Uri photoURI;
-    private ImageView ivInmueble;
-    private static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 100;
+    private File imageFile;
     private FragmentInmuebleBinding binding;
     private InmuebleFragmentViewModel vm;
 
@@ -54,7 +58,6 @@ public class InmuebleFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentInmuebleBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        ivInmueble = binding.ivFoto;
         vm = new ViewModelProvider(this).get(InmuebleFragmentViewModel.class);
         vm.getMInmueble().observe(getViewLifecycleOwner(), new Observer<Inmueble>() {
             @Override
@@ -127,7 +130,6 @@ public class InmuebleFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 binding.cbDisponible.setEnabled(!aBoolean);
-                binding.cbDisponible.setChecked(!aBoolean);
                 binding.etAmbientes.setEnabled(aBoolean);
                 binding.etDireccion.setEnabled(aBoolean);
                 binding.etPrecio.setEnabled(aBoolean);
@@ -163,8 +165,9 @@ public class InmuebleFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Inmueble inmueble = new Inmueble();
-                //inmueble.set
-                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etPrecio.getText().toString(), binding.etDireccion.getText().toString(), getView());
+                inmueble.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
+                inmueble.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
+                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), imageFile, binding.getRoot());
             }
         });
         vm.cargarInmueble(getArguments());
@@ -188,11 +191,11 @@ public class InmuebleFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            binding.ivFoto.setImageURI(photoURI);
-        } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             if (selectedImageUri != null) {
+                String imagePath = RealPathUtil.getRealPath(getContext(), selectedImageUri);
+                imageFile = new File(imagePath);
                 RequestOptions options = new RequestOptions()
                         .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
                         .error(R.drawable.icon_logout); // Imagen de error
@@ -202,6 +205,7 @@ public class InmuebleFragment extends Fragment {
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
                         .apply(options)
                         .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
+                binding.ivFoto.setImageURI(selectedImageUri);
             }
         }
     }

@@ -1,33 +1,22 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
 
-import static java.security.AccessController.getContext;
-
 import android.app.Application;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
 import com.ezediaz.inmobiliaria.request.ApiClient;
-
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -195,8 +184,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         }
     }
 
-    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String
-            precio, View view) {
+    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, View view) {
         if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
             Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();
         } else {

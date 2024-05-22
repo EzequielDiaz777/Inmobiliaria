@@ -10,10 +10,10 @@ public class Inmueble implements Serializable {
     private int ambientes;
     private double precio;
     private boolean estado;
+    private String imagenUrl;
     private Propietario duenio;
     private Tipo tipo;
     private Uso uso;
-    private String imagenUrl;
 
     public Inmueble(int id, int propietarioId, int tipoId, int usoId, String direccion, int ambientes, double precio, boolean estado, Propietario duenio, Tipo tipo, Uso uso) {
         this.id = id;

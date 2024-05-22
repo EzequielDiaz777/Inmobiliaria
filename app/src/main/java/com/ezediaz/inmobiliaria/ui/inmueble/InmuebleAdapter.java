@@ -51,8 +51,6 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
         holder.direccion.setText(inmueble.getDireccion());
         // Corregir el formato de la URL de la imagen
         String imageUrl = ApiClient.URL+inmueble.getImagenUrl();
-        // Cargar la imagen del inmueble usando Glide
-        Log.d("imagen", imageUrl);
         RequestOptions options = new RequestOptions()
                 .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
                 .error(R.drawable.icon_logout); // Imagen de error

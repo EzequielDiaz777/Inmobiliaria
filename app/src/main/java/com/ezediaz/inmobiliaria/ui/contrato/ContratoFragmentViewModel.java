@@ -1,4 +1,4 @@
-package com.ezediaz.inmobiliaria.ui.inmueble;
+package com.ezediaz.inmobiliaria.ui.contrato;
 import android.app.Activity;
 import android.app.Application;
 import android.net.Uri;
@@ -14,12 +14,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.ezediaz.inmobiliaria.R;
-import java.io.File;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.RealPathUtil;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
 import com.ezediaz.inmobiliaria.request.ApiClient;
+import java.io.File;
 import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InmuebleFragmentViewModel extends AndroidViewModel {
+public class ContratoFragmentViewModel extends AndroidViewModel {
     private MutableLiveData<Inmueble> mInmueble;
     private MutableLiveData<Boolean> mDisponible;
     private MutableLiveData<Boolean> mHabilitar;
@@ -40,7 +40,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
     private MutableLiveData<Uso> mUso;
     private MutableLiveData<Uri> mUri;
 
-    public InmuebleFragmentViewModel(@NonNull Application application) {
+    public ContratoFragmentViewModel(@NonNull Application application) {
         super(application);
     }
 

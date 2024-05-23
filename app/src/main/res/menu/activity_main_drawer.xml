@@ -13,9 +13,15 @@
             android:icon="@drawable/icon_perfil"
             android:title="Mi perfil" />
         <item
-            android:id="@+id/nav_lista"
+            android:id="@+id/nav_inmuebles"
             android:icon="@drawable/icon_inmuebles"
             android:title="Mis inmuebles" />
+        <item
+            android:id="@+id/nav_contratos"
+            android:icon="@drawable/icon_contratos"
+            android:title="Mis contratos"
+            />
+
         <item
             android:id="@+id/nav_salir"
             android:icon="@drawable/icon_logout"

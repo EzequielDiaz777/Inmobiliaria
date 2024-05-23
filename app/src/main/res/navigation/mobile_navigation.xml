@@ -18,12 +18,12 @@
         tools:layout="@layout/fragment_salir" />
 
     <fragment
-        android:id="@+id/nav_lista"
-        android:name="com.ezediaz.inmobiliaria.ui.inmueble.ListaFragment"
-        android:label="Inmuebles"
-        tools:layout="@layout/fragment_lista">
+        android:id="@+id/nav_inmuebles"
+        android:name="com.ezediaz.inmobiliaria.ui.inmueble.InmueblesFragment"
+        android:label="Lista de inmuebles"
+        tools:layout="@layout/fragment_inmuebles">
         <action
-            android:id="@+id/action_listaFragment_to_inmuebleFragment"
+            android:id="@+id/action_inmueblesFragment_to_inmuebleFragment"
             app:destination="@id/nav_inmueble" />
     </fragment>
 
@@ -33,27 +33,39 @@
         android:label="Detalle del inmueble"
         tools:layout="@layout/fragment_inmueble" >
         <action
-            android:id="@+id/action_nav_inmueble_to_nav_lista"
-            app:destination="@id/nav_lista" />
+            android:id="@+id/action_nav_inmueble_to_nav_inmuebles"
+            app:destination="@id/nav_inmuebles" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_perfil"
         android:name="com.ezediaz.inmobiliaria.ui.perfil.PerfilFragment"
         android:label="Mi perfil"
-        tools:layout="@layout/fragment_perfil" >
-        <action
-            android:id="@+id/action_nav_perfil_to_nav_cambiar_password"
-            app:destination="@id/nav_cambiar_password" />
-    </fragment>
+        tools:layout="@layout/fragment_perfil" />
 
     <fragment
         android:id="@+id/nav_cambiar_password"
         android:name="com.ezediaz.inmobiliaria.ui.perfil.CambiarPasswordFragment"
         android:label="Cambiar contraseña"
-        tools:layout="@layout/fragment_cambiar_password" >
+        tools:layout="@layout/fragment_cambiar_password" />
+
+    <fragment
+        android:id="@+id/nav_contratos"
+        android:name="com.ezediaz.inmobiliaria.ui.contrato.ContratosFragment"
+        android:label="Lista de contratos"
+        tools:layout="@layout/fragment_contratos" >
         <action
-            android:id="@+id/action_nav_cambiar_password_to_nav_perfil"
-            app:destination="@id/nav_perfil" />
+            android:id="@+id/action_nav_contratos_to_nav_contrato"
+            app:destination="@id/nav_contrato" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_contrato"
+        android:name="com.ezediaz.inmobiliaria.ui.contrato.ContratoFragment"
+        android:label="Detalle del contrato"
+        tools:layout="@layout/fragment_contrato" >
+        <action
+            android:id="@+id/action_nav_contrato_to_nav_contratos"
+            app:destination="@id/nav_contratos" />
     </fragment>
 </navigation>

@@ -2,6 +2,7 @@ package com.ezediaz.inmobiliaria.request;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ezediaz.inmobiliaria.model.Contrato;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Propietario;
 import com.ezediaz.inmobiliaria.model.Tipo;
@@ -87,6 +88,9 @@ public class ApiClient {
                 @Part("estado") RequestBody estado,
                 @Part MultipartBody.Part imagen
         );
+
+        @GET("Contratos")
+        Call<List<Contrato>> obtenerContratos(@Header("Authorization") String token);
     }
 
     public static void guardarToken(String token, Context context) {

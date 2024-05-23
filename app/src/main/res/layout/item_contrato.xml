@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cvItemInmueble"
+    android:id="@+id/cvItemContrato"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/card_background_color"
@@ -11,19 +11,18 @@
     app:contentPadding="10dp">
 
     <LinearLayout
-        android:id="@+id/itemInmueble"
+        android:id="@+id/itemContrato"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Agrega un ImageView para mostrar la imagen -->
         <ImageView
             android:id="@+id/ivImagenInm"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:src="@drawable/icon_inmuebles"
-        />
+            />
 
         <TextView
             android:id="@+id/tvDireccionInm"
@@ -37,19 +36,6 @@
             android:text="Dirección"
             android:textColor="@color/text_primary_color"
             android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tvPrecioInm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Precio"
-            android:textColor="@color/text_secondary_color"
-            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnVerMas"

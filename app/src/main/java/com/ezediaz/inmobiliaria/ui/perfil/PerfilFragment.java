@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.databinding.FragmentPerfilBinding;
 import com.ezediaz.inmobiliaria.model.Propietario;
 
@@ -48,14 +50,6 @@ public class PerfilFragment extends Fragment {
                 binding.etEmailPerfil.setEnabled(aBoolean);
             }
         });
-
-        vm.getMVisible().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer i) {
-                binding.tvPassword.setVisibility(i);
-                binding.etPasswordPerfil.setVisibility(i);
-            }
-        });
         binding.btnEditar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,9 +59,13 @@ public class PerfilFragment extends Fragment {
                 p.setApellido(binding.etApellido.getText().toString());
                 p.setTelefono(binding.etTelefono.getText().toString());
                 p.setEmail(binding.etEmailPerfil.getText().toString());
-                p.setPassword(binding.etPasswordPerfil.getText().toString());
-                binding.etPasswordPerfil.setText("");
                 vm.editarDatos(binding.btnEditar.getText().toString(), p);
+            }
+        });
+        binding.btnCambiarPasswordVieja.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.nav_cambiar_password, null);
             }
         });
         vm.miPerfil();

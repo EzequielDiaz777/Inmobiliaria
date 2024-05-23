@@ -52,8 +52,13 @@ public class ApiClient {
         @PUT("Propietarios")
         Call<Propietario> modificarUsuario(@Header("Authorization") String token, @Body Propietario propietario);
 
-        @POST("Propietarios/olvidecontraseña/{email}")
-        Call<String> enviarEmail(@Path("email") String email);
+        @FormUrlEncoded
+        @PUT("Propietarios/cambiarviejacontraseña")
+        Call<Void> cambiarPassword(@Header("Authorization") String token, @Field("ClaveVieja") String claveVieja, @Field("ClaveNueva") String claveNueva, @Field("RepetirClaveNueva") String repetirClaveNueva);
+
+        @FormUrlEncoded
+        @POST("Propietarios/olvidecontraseña")
+        Call<Void> enviarEmail(@Field("email") String email);
 
         @GET("Inmuebles")
         Call<List<Inmueble>> obtenerInmuebles(@Header("Authorization") String token);

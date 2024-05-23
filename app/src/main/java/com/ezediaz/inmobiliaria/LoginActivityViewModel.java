@@ -52,10 +52,10 @@ public class LoginActivityViewModel extends AndroidViewModel {
         ApiClient.MisEndPoints api = ApiClient.getEndPoints();
         if(!email.isEmpty()){
             Log.d("email", email);
-            Call<String> call = api.enviarEmail(email);
-            call.enqueue(new Callback<String>() {
+            Call<Void> call = api.enviarEmail(email);
+            call.enqueue(new Callback<Void>() {
                 @Override
-                public void onResponse(Call<String> call, Response<String> response) {
+                public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getApplication(), "Email enviado a su correo para recuperar la contraseña", Toast.LENGTH_LONG).show();
                     } else {
@@ -64,15 +64,13 @@ public class LoginActivityViewModel extends AndroidViewModel {
                     }
                 }
                 @Override
-                public void onFailure(Call<String> call, Throwable throwable) {
-                    Throwable error = throwable.getCause();
-                    Log.d("email", error.getMessage());
+                public void onFailure(Call<Void> call, Throwable throwable) {
                     Toast.makeText(getApplication(), "Falla en la recuperación del email", Toast.LENGTH_LONG).show();
                     Log.d("salida", throwable.getMessage());
                 }
             });
         } else {
-            Toast.makeText(getApplication(), "Por favor ingrese un email", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplication(), "Por favor ingrese un email para recuperar la contraseña", Toast.LENGTH_LONG).show();
         }
     }
 

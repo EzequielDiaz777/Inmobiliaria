@@ -42,13 +42,6 @@ public class PerfilFragmentViewModel extends AndroidViewModel {
         return mGuardar;
     }
 
-    public LiveData<Integer> getMVisible(){
-        if(mVisible == null){
-            mVisible = new MutableLiveData<>();
-        }
-        return mVisible;
-    }
-
     public LiveData<Boolean> getMHabilitar() {
         if(mHabilitar == null){
             mHabilitar = new MutableLiveData<>();
@@ -60,11 +53,9 @@ public class PerfilFragmentViewModel extends AndroidViewModel {
         if(boton.equals("Editar perfil")){
             mGuardar.setValue("Guardar perfil");
             mHabilitar.setValue(true);
-            mVisible.setValue(0);
         } else {
             mGuardar.setValue("Editar perfil");
             mHabilitar.setValue(false);
-            mVisible.setValue(8);
             String token = ApiClient.leerToken(getApplication());
             if (token != null) {
                 ApiClient.MisEndPoints api = ApiClient.getEndPoints();

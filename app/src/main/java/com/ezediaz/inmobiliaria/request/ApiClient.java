@@ -74,7 +74,6 @@ public class ApiClient {
         @POST("Inmuebles")
         Call<Inmueble> agregarInmueble(
                 @Header("Authorization") String token,
-                @Part("propietarioId") RequestBody propietarioId,
                 @Part("tipoId") RequestBody tipoId,
                 @Part("usoId") RequestBody usoId,
                 @Part("direccion") RequestBody direccion,

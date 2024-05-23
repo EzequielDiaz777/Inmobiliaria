@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -47,10 +49,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class InmuebleFragment extends Fragment {
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_IMAGE_GALLERY = 2;
+    private Intent intent;
     private Uri photoURI;
-    private File imageFile;
+    private ActivityResultLauncher<Intent> arl;
     private FragmentInmuebleBinding binding;
     private InmuebleFragmentViewModel vm;
 
@@ -59,6 +60,7 @@ public class InmuebleFragment extends Fragment {
         binding = FragmentInmuebleBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         vm = new ViewModelProvider(this).get(InmuebleFragmentViewModel.class);
+        abrirGaleria();
         vm.getMInmueble().observe(getViewLifecycleOwner(), new Observer<Inmueble>() {
             @Override
             public void onChanged(Inmueble inmueble) {
@@ -137,6 +139,21 @@ public class InmuebleFragment extends Fragment {
                 binding.btnAgregarFoto.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
             }
         });
+        vm.getMUri().observe(getViewLifecycleOwner(), new Observer<Uri>() {
+            @Override
+            public void onChanged(Uri uri) {
+                RequestOptions options = new RequestOptions()
+                        .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
+                        .error(R.drawable.icon_logout); // Imagen de error
+                // Utiliza Glide para cargar y mostrar la imagen
+                Glide.with(getContext())
+                        .load(uri) // Especifica la URL de la imagen
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
+                        .apply(options)
+                        .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
+                photoURI = uri;
+            }
+        });
         binding.cbDisponible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,19 +163,7 @@ public class InmuebleFragment extends Fragment {
         binding.btnAgregarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                builder.setTitle("Select Image Source");
-                builder.setItems(new CharSequence[]{"Camera", "Gallery"}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            openCamera();
-                        } else {
-                            openGallery();
-                        }
-                    }
-                });
-                builder.show();
+                arl.launch(intent);
             }
         });
         binding.btnAgregarInmueble.setOnClickListener(new View.OnClickListener() {
@@ -167,111 +172,21 @@ public class InmuebleFragment extends Fragment {
                 Inmueble inmueble = new Inmueble();
                 inmueble.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
                 inmueble.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
-                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), imageFile, binding.getRoot());
+                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
             }
         });
         vm.cargarInmueble(getArguments());
         return root;
     }
 
-
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dispatchTakePictureIntent();
+    private void abrirGaleria() {
+        intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        arl = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult ar) {
+                vm.cargarFoto(ar);
             }
-        } else if (requestCode == REQUEST_IMAGE_GALLERY) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dispatchSelectPictureIntent();
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == Activity.RESULT_OK && data != null) {
-            Uri selectedImageUri = data.getData();
-            if (selectedImageUri != null) {
-                String imagePath = RealPathUtil.getRealPath(getContext(), selectedImageUri);
-                imageFile = new File(imagePath);
-                RequestOptions options = new RequestOptions()
-                        .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
-                        .error(R.drawable.icon_logout); // Imagen de error
-                // Utiliza Glide para cargar y mostrar la imagen
-                Glide.with(getContext())
-                        .load(selectedImageUri) // Especifica la URL de la imagen
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
-                        .apply(options)
-                        .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
-                binding.ivFoto.setImageURI(selectedImageUri);
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (photoURI != null) {
-            outState.putString("photo_uri", photoURI.toString());
-        }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null) {
-            String savedPhotoUri = savedInstanceState.getString("photo_uri");
-            if (savedPhotoUri != null) {
-                photoURI = Uri.parse(savedPhotoUri);
-                binding.ivFoto.setImageURI(photoURI);
-            }
-        }
-    }
-
-    private void openCamera() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
-        } else {
-            dispatchTakePictureIntent();
-        }
-    }
-
-    private void openGallery() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_IMAGE_GALLERY);
-        } else {
-            dispatchSelectPictureIntent();
-        }
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Handle error
-            }
-            if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(requireContext(), "com.ezediaz.inmobiliaria.provider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
-
-    private void dispatchSelectPictureIntent() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
-    }
-
-    private File createImageFile() throws IOException {
-        String imageFileName = "JPEG_" + System.currentTimeMillis() + "_";
-        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
+        });
     }
 
     @Override

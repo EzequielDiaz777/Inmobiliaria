@@ -1,12 +1,17 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,12 +19,15 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.ezediaz.inmobiliaria.R;
+
+import java.io.File;
+
 import com.ezediaz.inmobiliaria.model.Inmueble;
+import com.ezediaz.inmobiliaria.model.RealPathUtil;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
 import com.ezediaz.inmobiliaria.request.ApiClient;
 
-import java.io.File;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -39,6 +47,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> mTextos;
     private MutableLiveData<Tipo> mTipo;
     private MutableLiveData<Uso> mUso;
+    private MutableLiveData<Uri> mUri;
 
     public InmuebleFragmentViewModel(@NonNull Application application) {
         super(application);
@@ -98,6 +107,13 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
             mUso = new MutableLiveData<>();
         }
         return mUso;
+    }
+
+    public LiveData<Uri> getMUri() {
+        if (mUri == null) {
+            mUri = new MutableLiveData<>();
+        }
+        return mUri;
     }
 
     private void cargarTipos() {
@@ -193,36 +209,45 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         }
     }
 
-    public void controlarExtension(File imagen){
-
+    public void cargarFoto(ActivityResult result) {
+        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+            Uri selectedImageUri = result.getData().getData();
+            if (selectedImageUri != null) {
+                mUri.setValue(selectedImageUri);
+            }
+        } else {
+            Toast.makeText(getApplication(), "Debe elegirse una imagen antes de dar de guardar el inmueble", Toast.LENGTH_LONG).show();
+        }
     }
-    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, File imagenFile, View view) {
+
+    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, Uri photoUri, View view) {
         if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
             Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();
-        } else if (imagenFile == null) {
+        } else if (photoUri == null) {
             Toast.makeText(getApplication(), "Debe elegirse una imagen antes de dar de guardar el inmueble", Toast.LENGTH_LONG).show();
         } else {
-            String[] parts = imagenFile.getName().split("\\.");
+            String rutaArchivo = RealPathUtil.getRealPath(getApplication(), photoUri);
+            File imagen = new File(rutaArchivo);
+            String[] parts = imagen.getName().split("\\.");
             String extension2 = parts[1];
             if (!extension2.equals("jpg") && !extension2.equals("png")) {
-                Toast.makeText(getApplication(), "La imagen debe ser .jpg o .png antes de dar de guardar el inmueble", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), "La imagen seleccionada debe tener una extensión .jpg o .png", Toast.LENGTH_LONG).show();
             } else {
                 String token = ApiClient.leerToken(getApplication());
                 if (token != null) {
                     ApiClient.MisEndPoints api = ApiClient.getEndPoints();
                     // Convertir campos a RequestBody
-                    RequestBody propietarioId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.getPropietarioId()));
-                    RequestBody tipoId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.getTipoId()));
-                    RequestBody usoId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.getUsoId()));
-                    RequestBody direccionBody = RequestBody.create(MediaType.parse("text/plain"), direccion);
-                    RequestBody ambientesBody = RequestBody.create(MediaType.parse("text/plain"), ambientes);
-                    RequestBody precioBody = RequestBody.create(MediaType.parse("text/plain"), precio);
-                    RequestBody estado = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(inmueble.isEstado()));
+                    RequestBody tipoId = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.getTipoId()));
+                    RequestBody usoId = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.getUsoId()));
+                    RequestBody direccionBody = RequestBody.create(MediaType.parse("application/json"), direccion);
+                    RequestBody ambientesBody = RequestBody.create(MediaType.parse("application/json"), ambientes);
+                    RequestBody precioBody = RequestBody.create(MediaType.parse("application/json"), precio);
+                    RequestBody estado = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.isEstado()));
                     // Crear MultipartBody.Part para la imagen
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imagenFile);
-                    MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", imagenFile.getName(), requestFile);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imagen);
+                    MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", imagen.getName(), requestFile);
                     // Realizar la llamada a la API
-                    Call<Inmueble> call = api.agregarInmueble(token, propietarioId, tipoId, usoId, direccionBody, ambientesBody, precioBody, estado, imagenPart);
+                    Call<Inmueble> call = api.agregarInmueble(token, tipoId, usoId, direccionBody, ambientesBody, precioBody, estado, imagenPart);
                     call.enqueue(new Callback<Inmueble>() {
                         @Override
                         public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {

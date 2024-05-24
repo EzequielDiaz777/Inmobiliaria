@@ -52,7 +52,7 @@ public class ApiClient {
         Call<Propietario> miPerfil(@Header("Authorization") String token);
 
         @PUT("Propietarios")
-        Call<Propietario> modificarUsuario(@Header("Authorization") String token, @Body Propietario propietario);
+        Call<String> modificarUsuario(@Header("Authorization") String token, @Body Propietario propietario);
 
         @FormUrlEncoded
         @PUT("Propietarios/cambiarviejacontraseña")

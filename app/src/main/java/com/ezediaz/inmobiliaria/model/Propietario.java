@@ -1,5 +1,7 @@
 package com.ezediaz.inmobiliaria.model;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 public class Propietario implements Serializable {
@@ -77,5 +79,9 @@ public class Propietario implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String toString() {
+        return apellido + ", " + nombre;
     }
 }

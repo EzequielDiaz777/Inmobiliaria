@@ -21,7 +21,6 @@
             android:icon="@drawable/icon_contratos"
             android:title="Mis contratos"
             />
-
         <item
             android:id="@+id/nav_salir"
             android:icon="@drawable/icon_logout"

@@ -1,8 +1,12 @@
 package com.ezediaz.inmobiliaria.ui.perfil;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,14 +15,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ezediaz.inmobiliaria.LoginActivity;
+import com.ezediaz.inmobiliaria.LoginActivityViewModel;
+import com.ezediaz.inmobiliaria.R;
+import com.ezediaz.inmobiliaria.databinding.ActivityMainBinding;
 import com.ezediaz.inmobiliaria.model.Propietario;
 import com.ezediaz.inmobiliaria.request.ApiClient;
+import com.google.android.gms.common.api.Api;
+import com.google.android.material.navigation.NavigationView;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PerfilFragmentViewModel extends AndroidViewModel {
+    private SharedPreferences sharedPreferences;
     private MutableLiveData<Propietario> mPropietario;
     private MutableLiveData<String> mGuardar;
     private MutableLiveData<Boolean> mHabilitar;
@@ -59,13 +69,19 @@ public class PerfilFragmentViewModel extends AndroidViewModel {
             String token = ApiClient.leerToken(getApplication());
             if (token != null) {
                 ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-                Call<Propietario> call = api.modificarUsuario(token, propietario);
-                call.enqueue(new Callback<Propietario>() {
+                Call<String> call = api.modificarUsuario(token, propietario);
+                call.enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call<Propietario> call, Response<Propietario> response) {
+                    public void onResponse(Call<String> call, Response<String> response) {
                         if (response.isSuccessful()) {
-                            mPropietario.postValue(response.body());
                             Toast.makeText(getApplication(), "Perfil actualizado", Toast.LENGTH_LONG).show();
+                            sharedPreferences = getApplication().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("nombre completo", propietario.toString());
+                            editor.putString("email", propietario.getEmail());
+                            editor.apply();
+                            ApiClient.guardarToken("Bearer " + response.body(), getApplication());
+                            mPropietario.setValue(propietario);
                         } else {
                             Toast.makeText(getApplication(), "Falla en la actualización", Toast.LENGTH_LONG).show();
                             Log.d("salida", response.message());
@@ -73,7 +89,7 @@ public class PerfilFragmentViewModel extends AndroidViewModel {
                         }
                     }
                     @Override
-                    public void onFailure(Call<Propietario> call, Throwable throwable) {
+                    public void onFailure(Call<String> call, Throwable throwable) {
                         Log.d("salida", "Falla: " + throwable.getMessage());
                     }
                 });

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import com.ezediaz.inmobiliaria.model.Propietario;
 import com.ezediaz.inmobiliaria.request.ApiClient;
 
 import retrofit2.Call;
@@ -79,6 +80,28 @@ public class LoginActivityViewModel extends AndroidViewModel {
     }
 
     private void iniciarMainActivity() {
+        sharedPreferences = getApplication().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        ApiClient.MisEndPoints api = ApiClient.getEndPoints();
+        String token = ApiClient.leerToken(getApplication());
+        Call<Propietario> call = api.miPerfil(token);
+        call.enqueue(new Callback<Propietario>() {
+            @Override
+            public void onResponse(Call<Propietario> call, Response<Propietario> response) {
+                if (response.isSuccessful()) {
+                    editor.putString("nombre completo", response.body().toString());
+                    editor.putString("email", response.body().getEmail());
+                    editor.apply();
+                } else {
+                    Log.d("salida", response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Propietario> call, Throwable throwable) {
+                Log.d("salida", throwable.getMessage());
+            }
+        });
         Intent intent = new Intent(getApplication(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Limpiar la pila de actividades
         getApplication().startActivity(intent);

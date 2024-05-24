@@ -65,18 +65,6 @@ public class ApiClient {
         @GET("Inmuebles")
         Call<List<Inmueble>> obtenerInmuebles(@Header("Authorization") String token);
 
-        @GET("Inmuebles/{id}")
-        Call<Inmueble> obtenerInmueble(@Header("Authorization") String token, @Path("id") int id);
-
-        @PUT("Inmuebles/cambiologico/{id}")
-        Call<Void> inmuebleDisponible(@Header("Authorization") String token, @Path("id") int id);
-        
-        @GET("Tipos")
-        Call<List<Tipo>> obtenerTipos(@Header("Authorization") String token);
-
-        @GET("Usos")
-        Call<List<Uso>> obtenerUsos(@Header("Authorization") String token);
-
         @Multipart
         @POST("Inmuebles")
         Call<Inmueble> agregarInmueble(
@@ -89,6 +77,15 @@ public class ApiClient {
                 @Part("estado") RequestBody estado,
                 @Part MultipartBody.Part imagen
         );
+
+        @PUT("Inmuebles/cambiologico/{id}")
+        Call<Void> inmuebleDisponible(@Header("Authorization") String token, @Path("id") int id);
+        
+        @GET("Tipos")
+        Call<List<Tipo>> obtenerTipos(@Header("Authorization") String token);
+
+        @GET("Usos")
+        Call<List<Uso>> obtenerUsos(@Header("Authorization") String token);
 
         @GET("Contratos")
         Call<List<Contrato>> obtenerContratos(@Header("Authorization") String token);

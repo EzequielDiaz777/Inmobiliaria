@@ -12,25 +12,27 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.compose.ui.text.intl.Locale;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.databinding.FragmentContratoBinding;
+import com.ezediaz.inmobiliaria.model.Contrato;
 import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
-import com.ezediaz.inmobiliaria.request.ApiClient;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ContratoFragment extends Fragment {
-    private Intent intent;
-    private Uri photoURI;
-    private ActivityResultLauncher<Intent> arl;
     private FragmentContratoBinding binding;
     private ContratoFragmentViewModel vm;
 
@@ -39,133 +41,53 @@ public class ContratoFragment extends Fragment {
         binding = FragmentContratoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         vm = new ViewModelProvider(this).get(ContratoFragmentViewModel.class);
-        abrirGaleria();
-        vm.getMInmueble().observe(getViewLifecycleOwner(), new Observer<Inmueble>() {
+        vm.getMContrato().observe(getViewLifecycleOwner(), new Observer<Contrato>() {
             @Override
-            public void onChanged(Inmueble inmueble) {
-                binding.etCodigo.setText(String.valueOf(inmueble.getId()));
-                binding.etAmbientes.setText(String.valueOf(inmueble.getAmbientes()));
-                binding.etDireccion.setText(inmueble.getDireccion());
-                binding.etPrecio.setText(String.valueOf(inmueble.getPrecio()));
-                binding.cbDisponible.setChecked(inmueble.isEstado());
-                RequestOptions options = new RequestOptions()
-                        .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
-                        .error(R.drawable.icon_logout); // Imagen de error
-                // Utiliza Glide para cargar y mostrar la imagen
-                Glide.with(getContext())
-                        .load(ApiClient.URL + inmueble.getImagenUrl()) // Especifica la URL de la imagen
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
-                        .apply(options)
-                        .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
+            public void onChanged(Contrato contrato) {
+                binding.etCodigoContrato.setText(String.valueOf(contrato.getId()));
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'del' yyyy");
+                LocalDate fechaLD = LocalDate.parse(contrato.getFechaInicio(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                String fechaS = fechaLD.format(formatter);
+                binding.etFechaInicio.setText(fechaS);
+                fechaLD = LocalDate.parse(contrato.getFechaFin(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                fechaS = fechaLD.format(formatter);
+                binding.etFechaFin.setText(fechaS);
+                binding.etMonto.setText(String.valueOf(contrato.getPrecio()));
+                binding.etInquilino.setText(contrato.getInquilino().toString());
+                binding.etInmueble.setText(contrato.getInmueble().toString());
             }
         });
-        vm.getMDisponible().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean disponible) {
-                binding.cbDisponible.setChecked(disponible);
-            }
-        });
-        vm.getMTipo().observe(getViewLifecycleOwner(), new Observer<Tipo>() {
-            @Override
-            public void onChanged(Tipo tipo) {
-                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                binding.spnTipo.setAdapter(tipoAdapter);
-                tipoAdapter.add(tipo);
-                binding.spnTipo.setSelection(tipoAdapter.getPosition(tipo));
-            }
-        });
-        vm.getMUso().observe(getViewLifecycleOwner(), new Observer<Uso>() {
-            @Override
-            public void onChanged(Uso uso) {
-                ArrayAdapter<Uso> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                binding.spnUso.setAdapter(tipoAdapter);
-                tipoAdapter.add(uso);
-                binding.spnUso.setSelection(tipoAdapter.getPosition(uso));
-            }
-        });
-        vm.getMListaTipo().observe(getViewLifecycleOwner(), new Observer<List<Tipo>>() {
-            @Override
-            public void onChanged(List<Tipo> tipos) {
-                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                binding.spnTipo.setAdapter(tipoAdapter);
-                tipoAdapter.addAll(tipos);
-            }
-        });
-        vm.getMListaUso().observe(getViewLifecycleOwner(), new Observer<List<Uso>>() {
-            @Override
-            public void onChanged(List<Uso> usos) {
-                ArrayAdapter<Uso> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                binding.spnUso.setAdapter(tipoAdapter);
-                tipoAdapter.addAll(usos);
-            }
-        });
-        vm.getMTextos().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                binding.etDireccion.setText(aBoolean ? "" : binding.etDireccion.getText().toString());
-                binding.etAmbientes.setText(aBoolean ? "" : binding.etAmbientes.getText().toString());
-                binding.etPrecio.setText(aBoolean ? "" : binding.etPrecio.getText().toString());
-            }
-        });
-        vm.getMHabilitar().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                binding.cbDisponible.setEnabled(!aBoolean);
-                binding.etAmbientes.setEnabled(aBoolean);
-                binding.etDireccion.setEnabled(aBoolean);
-                binding.etPrecio.setEnabled(aBoolean);
-                binding.btnAgregarInmueble.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
-                binding.btnAgregarFoto.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
-            }
-        });
-        vm.getMUri().observe(getViewLifecycleOwner(), new Observer<Uri>() {
-            @Override
-            public void onChanged(Uri uri) {
-                RequestOptions options = new RequestOptions()
-                        .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
-                        .error(R.drawable.icon_logout); // Imagen de error
-                // Utiliza Glide para cargar y mostrar la imagen
-                Glide.with(getContext())
-                        .load(uri) // Especifica la URL de la imagen
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
-                        .apply(options)
-                        .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
-                photoURI = uri;
-            }
-        });
-        binding.cbDisponible.setOnClickListener(new View.OnClickListener() {
+        binding.btnVerInquilino.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                vm.cambiarDisponibilidad(binding.cbDisponible.isChecked(), Integer.valueOf(binding.etCodigo.getText().toString()));
+                vm.cargarInquilino(v);
             }
         });
-        binding.btnAgregarFoto.setOnClickListener(new View.OnClickListener() {
+        binding.btnVerPagos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                arl.launch(intent);
+                vm.cargarPagos(v);
             }
         });
-        binding.btnAgregarInmueble.setOnClickListener(new View.OnClickListener() {
+        /*binding.btnVerPagos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Inmueble inmueble = new Inmueble();
-                inmueble.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
-                inmueble.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
-                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("pagos", );
+                Navigation.findNavController(v).navigate(R.id.nav_contrato, bundle);
             }
         });
-        vm.cargarInmueble(getArguments());
+        binding.btnVerPagos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Inmueble contrato = new Inmueble();
+                contrato.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
+                contrato.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
+                vm.agregarInmueble(contrato, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
+            }
+        });*/
+        vm.cargarContratos(getArguments());
         return root;
-    }
-
-    private void abrirGaleria() {
-        intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        arl = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult ar) {
-                vm.cargarFoto(ar);
-            }
-        });
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.ezediaz.inmobiliaria.model.Contrato;
 import com.ezediaz.inmobiliaria.model.Inmueble;
+import com.ezediaz.inmobiliaria.model.Pago;
 import com.ezediaz.inmobiliaria.model.Propietario;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
@@ -91,6 +92,9 @@ public class ApiClient {
 
         @GET("Contratos")
         Call<List<Contrato>> obtenerContratos(@Header("Authorization") String token);
+
+        @GET("Pagos/{id}")
+        Call<List<Pago>> obtenerPagos(@Header("Authorization") String token, @Path("id") int id);
     }
 
     public static void guardarToken(String token, Context context) {

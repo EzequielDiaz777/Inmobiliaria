@@ -1,17 +1,16 @@
 package com.ezediaz.inmobiliaria.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 public class Pago implements Serializable {
     private int id;
     private int contratoId;
     private double monto;
     private int numeroDePago;
-    private LocalDate fecha;
+    private String fecha;
     private Contrato contrato;
 
-    public Pago(int id, int contratoId, double monto, int numeroDePago, LocalDate fecha, Contrato contrato) {
+    public Pago(int id, int contratoId, double monto, int numeroDePago, String fecha, Contrato contrato) {
         this.id = id;
         this.contratoId = contratoId;
         this.monto = monto;
@@ -55,11 +54,11 @@ public class Pago implements Serializable {
         this.numeroDePago = numeroDePago;
     }
 
-    public LocalDate getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 

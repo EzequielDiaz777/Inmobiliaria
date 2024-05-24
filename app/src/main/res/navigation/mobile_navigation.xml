@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_perfil">
+    app:startDestination="@+id/nav_contratos">
 
     <fragment
         android:id="@+id/nav_mapa"
@@ -12,10 +12,16 @@
         tools:layout="@layout/fragment_mapa" />
 
     <fragment
-        android:id="@+id/nav_salir"
-        android:name="com.ezediaz.inmobiliaria.ui.deslogeo.SalirFragment"
-        android:label="Deslogueo"
-        tools:layout="@layout/fragment_salir" />
+        android:id="@+id/nav_perfil"
+        android:name="com.ezediaz.inmobiliaria.ui.perfil.PerfilFragment"
+        android:label="Mi perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/nav_cambiar_password"
+        android:name="com.ezediaz.inmobiliaria.ui.perfil.CambiarPasswordFragment"
+        android:label="Cambiar contraseña"
+        tools:layout="@layout/fragment_cambiar_password" />
 
     <fragment
         android:id="@+id/nav_inmuebles"
@@ -38,18 +44,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_perfil"
-        android:name="com.ezediaz.inmobiliaria.ui.perfil.PerfilFragment"
-        android:label="Mi perfil"
-        tools:layout="@layout/fragment_perfil" />
-
-    <fragment
-        android:id="@+id/nav_cambiar_password"
-        android:name="com.ezediaz.inmobiliaria.ui.perfil.CambiarPasswordFragment"
-        android:label="Cambiar contraseña"
-        tools:layout="@layout/fragment_cambiar_password" />
-
-    <fragment
         android:id="@+id/nav_contratos"
         android:name="com.ezediaz.inmobiliaria.ui.contrato.ContratosFragment"
         android:label="Lista de contratos"
@@ -68,4 +62,30 @@
             android:id="@+id/action_nav_contrato_to_nav_contratos"
             app:destination="@id/nav_contratos" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_pagos"
+        android:name="com.ezediaz.inmobiliaria.ui.pago.PagosFragment"
+        android:label="Detalles de pagos del contrato"
+        tools:layout="@layout/fragment_pagos" >
+        <action
+            android:id="@+id/action_nav_pagos_to_nav_contratos"
+            app:destination="@id/nav_contratos" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_inquilino"
+        android:name="com.ezediaz.inmobiliaria.ui.inquilino.InquilinoFragment"
+        android:label="Detalle del inquilino"
+        tools:layout="@layout/fragment_inquilino" >
+        <action
+            android:id="@+id/action_nav_inquilino_to_nav_contratos"
+            app:destination="@id/nav_contratos" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_salir"
+        android:name="com.ezediaz.inmobiliaria.ui.deslogeo.SalirFragment"
+        android:label="Deslogueo"
+        tools:layout="@layout/fragment_salir" />
 </navigation>

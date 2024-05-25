@@ -30,6 +30,8 @@ public class InmueblesFragment extends Fragment {
                 InmuebleAdapter inmuebleAdapter = new InmuebleAdapter(inmueble, getLayoutInflater());
                 GridLayoutManager glm = new GridLayoutManager(container.getContext(), 1, GridLayoutManager.VERTICAL, false);
                 RecyclerView rv = binding.listaDeInmuebles;
+                int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+                rv.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
                 rv.setLayoutManager(glm);
                 rv.setAdapter(inmuebleAdapter);
             }

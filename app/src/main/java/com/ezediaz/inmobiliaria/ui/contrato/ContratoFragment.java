@@ -1,4 +1,5 @@
 package com.ezediaz.inmobiliaria.ui.contrato;
+import com.ezediaz.inmobiliaria.ui.inmueble.Utils;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class ContratoFragment extends Fragment {
             @Override
             public void onChanged(Contrato contrato) {
                 binding.etCodigoContrato.setText(String.valueOf(contrato.getId()));
+                binding.etCodigoContrato.setFocusable(false);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'del' yyyy");
                 LocalDate fechaLD = LocalDate.parse(contrato.getFechaInicio(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String fechaS = fechaLD.format(formatter);
@@ -53,7 +55,7 @@ public class ContratoFragment extends Fragment {
                 fechaS = fechaLD.format(formatter);
                 binding.etFechaFin.setText(fechaS);
                 binding.etFechaFin.setFocusable(false);
-                binding.etMonto.setText(String.valueOf(contrato.getPrecio()));
+                binding.etMonto.setText(Utils.formatPrice(contrato.getPrecio()));
                 binding.etMonto.setFocusable(false);
                 binding.etInquilino.setText(contrato.getInquilino().toString());
                 binding.etInquilino.setFocusable(false);

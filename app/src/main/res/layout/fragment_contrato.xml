@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -23,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:hint="Código"
+            android:hint="Código del contrato"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 

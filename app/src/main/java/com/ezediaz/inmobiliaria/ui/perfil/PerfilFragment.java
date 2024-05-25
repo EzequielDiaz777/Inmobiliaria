@@ -39,7 +39,6 @@ public class PerfilFragment extends Fragment {
                 binding.etApellido.setText(propietario.getApellido());
                 binding.etTelefono.setText(propietario.getTelefono());
                 binding.etEmailPerfil.setText(propietario.getEmail());
-                // Obtener el NavigationView desde la actividad principal
                 NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                 sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                 String nombre = sharedPreferences.getString("nombre completo", "example");
@@ -60,11 +59,16 @@ public class PerfilFragment extends Fragment {
         vm.getMHabilitar().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                binding.etDNI.setEnabled(aBoolean);
-                binding.etNombre.setEnabled(aBoolean);
-                binding.etApellido.setEnabled(aBoolean);
-                binding.etTelefono.setEnabled(aBoolean);
-                binding.etEmailPerfil.setEnabled(aBoolean);
+                binding.etDNI.setFocusableInTouchMode(aBoolean);
+                binding.etDNI.clearFocus();
+                binding.etNombre.setFocusableInTouchMode(aBoolean);
+                binding.etNombre.clearFocus();
+                binding.etApellido.setFocusableInTouchMode(aBoolean);
+                binding.etApellido.clearFocus();
+                binding.etTelefono.setFocusableInTouchMode(aBoolean);
+                binding.etTelefono.clearFocus();
+                binding.etEmailPerfil.setFocusableInTouchMode(aBoolean);
+                binding.etEmailPerfil.clearFocus();
             }
         });
         binding.btnEditar.setOnClickListener(new View.OnClickListener() {

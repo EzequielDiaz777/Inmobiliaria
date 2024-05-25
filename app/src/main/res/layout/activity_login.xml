@@ -4,11 +4,6 @@
     android:background="@color/colorBackground"
     android:padding="16dp">
 
-    <!-- Logo de la aplicación -->
-    <!-- Asegúrate de tener un logo -->
-
-    <!-- Campo de entrada de correo electrónico -->
-
     <ImageView
         android:id="@+id/image_logo"
         android:layout_width="wrap_content"
@@ -38,8 +33,6 @@
             android:textColorHint="@color/colorSecondaryText" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <!-- Campo de entrada de contraseña -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -62,9 +55,8 @@
             android:textColorHint="@color/colorSecondaryText" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botón de inicio de sesión -->
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/password_input_layout"
@@ -75,12 +67,11 @@
         android:text="Iniciar sesión"
         android:textColor="@color/colorOnPrimary" />
 
-    <!-- Enlace para restablecer la contraseña -->
     <TextView
         android:id="@+id/tv_cambiar_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_login"
+        android:layout_below="@id/btnLogin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="¿Olvidaste tu contraseña?"
@@ -88,14 +79,15 @@
         android:textSize="14sp"
         android:textStyle="bold" />
 
-    <!-- Botón de huella digital -->
     <ImageButton
         android:id="@+id/btn_fingerprint"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="93dp"
         android:layout_below="@id/tv_cambiar_password"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="87dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_fingerprint" />
 </RelativeLayout>

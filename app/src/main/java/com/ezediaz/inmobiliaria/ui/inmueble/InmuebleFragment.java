@@ -64,7 +64,7 @@ public class InmuebleFragment extends Fragment {
                 binding.etCodigo.setText(String.valueOf(inmueble.getId()));
                 binding.etAmbientes.setText(String.valueOf(inmueble.getAmbientes()));
                 binding.etDireccion.setText(inmueble.getDireccion());
-                binding.etPrecio.setText(String.valueOf(inmueble.getPrecio()));
+                binding.etPrecio.setText((Utils.formatPrice(inmueble.getPrecio())));
                 binding.cbDisponible.setChecked(inmueble.isEstado());
                 RequestOptions options = new RequestOptions()
                         .placeholder(R.drawable.cargando_imagen) // Imagen de marcador de posición

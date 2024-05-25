@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.model.Pago;
 import com.ezediaz.inmobiliaria.request.ApiClient;
+import com.ezediaz.inmobiliaria.ui.inmueble.Utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -46,7 +47,7 @@ public class PagoAdapter extends RecyclerView.Adapter<PagoAdapter.ViewHolderPepe
         holder.codigoP.setText(String.valueOf(pago.getId()));
         holder.numeroDP.setText(String.valueOf(pago.getNumeroDePago()));
         holder.codigoC.setText(String.valueOf(pago.getContratoId()));
-        holder.importe.setText(Double.toString(pago.getMonto()));
+        holder.importe.setText(Utils.formatPrice(pago.getMonto()));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'del' yyyy");
         LocalDate fechaLD = LocalDate.parse(pago.getFecha(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String fechaS = fechaLD.format(formatter);

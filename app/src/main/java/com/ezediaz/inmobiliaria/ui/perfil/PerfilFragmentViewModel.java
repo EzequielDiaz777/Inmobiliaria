@@ -95,6 +95,7 @@ public class PerfilFragmentViewModel extends AndroidViewModel {
                 });
             }
         }
+
     }
 
     public void miPerfil(){
@@ -106,6 +107,7 @@ public class PerfilFragmentViewModel extends AndroidViewModel {
                 @Override
                 public void onResponse(Call<Propietario> call, Response<Propietario> response) {
                     if (response.isSuccessful()) {
+                        mHabilitar.setValue(false);
                         mPropietario.postValue(response.body());
                     } else {
                         Log.d("salida", "Incorrecto");

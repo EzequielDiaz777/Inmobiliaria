@@ -1,24 +1,22 @@
 package com.ezediaz.inmobiliaria;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.fragment.app.FragmentActivity;
-
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.ezediaz.inmobiliaria.model.Propietario;
 import com.ezediaz.inmobiliaria.request.ApiClient;
-
 import java.util.concurrent.Executor;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,12 +26,33 @@ public class LoginActivityViewModel extends AndroidViewModel {
     private Executor executor;
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
+    private float acelVal;
+    private float acelLast;
+    private float shake;
+    private static final String SHAKE_ACTION = "com.ezediaz.inmobiliaria.SHAKE_DETECTED";
     private Activity activity;
 
     public LoginActivityViewModel(@NonNull Application application) {
         super(application);
         sharedPreferences = application.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
         executor = ContextCompat.getMainExecutor(application);
+        acelVal = SensorManager.GRAVITY_EARTH;
+        acelLast = SensorManager.GRAVITY_EARTH;
+        shake = 0.00f;
+    }
+
+    public void onSensorChanged(SensorEvent event, Context context) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        acelLast = acelVal;
+        acelVal = (float) Math.sqrt((double) (x * x + y * y + z * z));
+        float delta = acelVal - acelLast;
+        shake = shake * 0.9f + delta;
+        if (shake > 12) {
+            Intent intent = new Intent(SHAKE_ACTION);
+            LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
+        }
     }
 
     public void iniciarAutenticacionBiometrica(Activity activity) {
@@ -42,16 +61,13 @@ public class LoginActivityViewModel extends AndroidViewModel {
             @Override
             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
-                // Handle error
                 Log.e("BiometricPrompt", "Authentication error: " + errString);
             }
 
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                // Authentication succeeded
                 Log.d("BiometricPrompt", "Authentication succeeded");
-                // Continuar con el proceso de login
                 String email = "diazezequiel777@gmail.com";
                 String password = "1234";
                 logueo(email, password);
@@ -60,18 +76,13 @@ public class LoginActivityViewModel extends AndroidViewModel {
             @Override
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
-                // Authentication failed
-                Log.e("BiometricPrompt", "Authentication failed");
             }
         });
-
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle("Autenticación biométrica")
                 .setSubtitle("Inicia sesión usando tu huella digital")
                 .setNegativeButtonText("Usar contraseña")
                 .build();
-
-        // Mostrar el diálogo de autenticación biométrica
         biometricPrompt.authenticate(promptInfo);
     }
 
@@ -84,7 +95,6 @@ public class LoginActivityViewModel extends AndroidViewModel {
                 if (response.isSuccessful()) {
                     String token = response.body();
                     guardarToken("Bearer " + token);
-                    Log.d("salida", "Inicio de sesión exitoso");
                     iniciarMainActivity();
                 } else {
                     Toast.makeText(getApplication(), "Email o contraseña incorrecta", Toast.LENGTH_LONG).show();
@@ -102,7 +112,6 @@ public class LoginActivityViewModel extends AndroidViewModel {
     public void enviarEmail(String email){
         ApiClient.MisEndPoints api = ApiClient.getEndPoints();
         if(!email.isEmpty()){
-            Log.d("email", email);
             Call<Void> call = api.enviarEmail(email);
             call.enqueue(new Callback<Void>() {
                 @Override
@@ -158,12 +167,6 @@ public class LoginActivityViewModel extends AndroidViewModel {
     }
 
     public void handleBiometricAuthenticationSuccess() {
-        // Lógica para manejar el inicio de sesión después de una autenticación biométrica exitosa
-        // Authentication succeeded
-        Log.d("BiometricPrompt", "Authentication succeeded");
-        // Continuar con el proceso de login
-        String email = "diazezequiel777@gmail.com";
-        String password = "1234";
-        logueo(email, password);
+        logueo("diazezequiel777@gmail.com", "1234");
     }
 }

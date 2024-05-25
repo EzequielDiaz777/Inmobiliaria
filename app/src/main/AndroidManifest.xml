@@ -28,7 +28,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_icon_app_2"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -52,7 +52,6 @@
             android:value="AIzaSyABiH1KEq7J2IzRe_H2v4qnw7F_fS4pHZM" />
 
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/app_name"

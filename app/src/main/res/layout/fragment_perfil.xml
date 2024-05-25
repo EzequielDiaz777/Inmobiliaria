@@ -13,14 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:enabled="false"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDNI"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="DNI"
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -31,14 +30,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/tilDNI">
+        app:layout_constraintTop_toBottomOf="@+id/tilDNI"
+        tools:layout_editor_absoluteX="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Nombre"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -49,14 +47,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/tilNombre">
+        app:layout_constraintTop_toBottomOf="@+id/tilNombre"
+        tools:layout_editor_absoluteX="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etApellido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Apellido"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -67,14 +64,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/tilApellido">
+        app:layout_constraintTop_toBottomOf="@+id/tilApellido"
+        tools:layout_editor_absoluteX="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEmailPerfil"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Email"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -85,14 +81,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/tilEmail">
+        app:layout_constraintTop_toBottomOf="@+id/tilEmail"
+        tools:layout_editor_absoluteX="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTelefono"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Teléfono"
             android:inputType="phone" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -101,7 +96,6 @@
         android:id="@+id/tvId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/tilTelefono"
         tools:ignore="MissingConstraints" />

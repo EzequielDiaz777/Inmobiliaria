@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvItemPago"
     android:layout_width="match_parent"
+    android:textAlignment="center"
     android:layout_height="wrap_content"
-    android:paddingBottom="20dp"
+    android:padding="@dimen/card_padding"
     app:cardBackgroundColor="@color/card_background_color"
     app:cardCornerRadius="20dp"
     app:cardElevation="10dp"
@@ -14,134 +15,86 @@
     <LinearLayout
         android:id="@+id/itemPago"
         android:layout_width="match_parent"
+        android:textAlignment="center"
         android:layout_height="wrap_content"
-        android:background="#00BCD4"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/card_padding"
+        android:background="@drawable/border">
 
         <TextView
             android:id="@+id/tvCodigoPago"
+            style="@style/PaymentTitleText"
             android:layout_width="match_parent"
+            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="Código de pago"
-            android:textColor="@color/text_primary_color"
-            android:textSize="18sp" />
+            android:text="Código de pago" />
 
         <TextView
             android:id="@+id/tvCodigoPagoInfo"
+            style="@style/PaymentInfoText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_primary_color"
-            android:textSize="14sp" />
+            android:textAlignment="center"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tvNumeroDePago"
+            style="@style/PaymentTitleText"
             android:layout_width="match_parent"
+            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="Número de pago"
-            android:textColor="@color/text_primary_color"
-            android:textSize="18sp" />
+            android:text="Número de pago" />
 
         <TextView
             android:id="@+id/tvNumeroDePagoInfo"
+            style="@style/PaymentInfoText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_primary_color"
-            android:textSize="14sp" />
+            android:textAlignment="center"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tvCodigoDelContrato"
+            style="@style/PaymentTitleText"
             android:layout_width="match_parent"
+            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="Código de contrato"
-            android:textColor="@color/text_primary_color"
-            android:textSize="18sp" />
+            android:text="Código de contrato" />
 
         <TextView
             android:id="@+id/tvCodigoDelContratoInfo"
+            style="@style/PaymentInfoText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_primary_color"
-            android:textSize="14sp" />
+            android:textAlignment="center"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tvImporteDelPago"
+            style="@style/PaymentTitleText"
             android:layout_width="match_parent"
+            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="Importe"
-            android:textColor="@color/text_primary_color"
-            android:textSize="18sp" />
+            android:text="Importe" />
 
         <TextView
             android:id="@+id/tvImporteDelPagoInfo"
+            style="@style/PaymentInfoText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_primary_color"
-            android:textSize="14sp" />
+            android:textAlignment="center"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tvFechaDePago"
+            style="@style/PaymentTitleText"
             android:layout_width="match_parent"
+            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="Fecha de pago"
-            android:textColor="@color/text_primary_color"
-            android:textSize="18sp" />
+            android:text="Fecha de pago" />
 
         <TextView
             android:id="@+id/tvFechaDePagoInfo"
+            style="@style/PaymentInfoText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/text_primary_color"
-            android:textSize="14sp" />
+            android:textAlignment="center"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

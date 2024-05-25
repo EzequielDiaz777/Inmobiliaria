@@ -2,16 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:drawable/alert_dark_frame">
+    android:background="@color/colorBackground"
+    android:padding="16dp">
 
     <!-- Logo de la aplicación -->
-    <!-- android:src="@drawable/ic_logo"-->
     <ImageView
         android:id="@+id/image_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp" />
+        android:layout_marginTop="64dp"
+        android:src="@drawable/ic_logo" /> <!-- Asegúrate de tener un logo -->
 
     <!-- Campo de entrada de correo electrónico -->
     <com.google.android.material.textfield.TextInputLayout
@@ -24,16 +25,15 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:hint="Correo electrónico"
-        android:outlineAmbientShadowColor="@color/black"
-        android:outlineSpotShadowColor="@color/black">
+        android:textColorHint="@color/colorSecondaryText">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:textColor="@color/colorWhite"
-            android:textColorHint="@color/black" />
+            android:textColor="@color/colorOnBackground"
+            android:textColorHint="@color/colorSecondaryText" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Campo de entrada de contraseña -->
@@ -46,15 +46,16 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:hint="Contraseña">
+        android:hint="Contraseña"
+        android:textColorHint="@color/colorSecondaryText">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:textColor="@color/colorWhite"
-            android:textColorHint="@color/black" />
+            android:textColor="@color/colorOnBackground"
+            android:textColorHint="@color/colorSecondaryText" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Botón de inicio de sesión -->
@@ -66,7 +67,9 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:text="Iniciar sesión" />
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Iniciar sesión"
+        android:textColor="@color/colorOnPrimary" />
 
     <!-- Enlace para restablecer la contraseña -->
     <TextView
@@ -77,6 +80,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="¿Olvidaste tu contraseña?"
-        android:textColor="@color/colorAccent" />
-
+        android:textColor="@color/colorSecondary"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 </RelativeLayout>

@@ -81,7 +81,7 @@ public class PerfilFragmentViewModel extends AndroidViewModel {
                             editor.putString("email", propietario.getEmail());
                             editor.apply();
                             ApiClient.guardarToken("Bearer " + response.body(), getApplication());
-                            mPropietario.setValue(propietario);
+                            mPropietario.postValue(propietario);
                         } else {
                             Toast.makeText(getApplication(), "Falla en la actualización", Toast.LENGTH_LONG).show();
                             Log.d("salida", response.message());

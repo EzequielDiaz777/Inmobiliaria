@@ -1,100 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvItemPago"
     android:layout_width="match_parent"
-    android:textAlignment="center"
     android:layout_height="wrap_content"
-    android:padding="@dimen/card_padding"
     app:cardBackgroundColor="@color/card_background_color"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="10dp"
-    app:contentPadding="10dp">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:contentPadding="16dp">
 
     <LinearLayout
         android:id="@+id/itemPago"
         android:layout_width="match_parent"
-        android:textAlignment="center"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/card_padding"
-        android:background="@drawable/border">
+        android:padding="15dp"
+        android:textAlignment="center"
+        android:background="@drawable/border_pagos">
 
         <TextView
             android:id="@+id/tvCodigoPago"
-            style="@style/PaymentTitleText"
+            style="@style/Widget.AppCompat.TextView.Title"
             android:layout_width="match_parent"
-            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:text="Código de pago" />
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:text="Código de pago"
+            android:textColor="@color/text_primary_color" />
 
         <TextView
             android:id="@+id/tvCodigoPagoInfo"
-            style="@style/PaymentInfoText"
+            style="@style/Widget.AppCompat.TextView.Body"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/text_secondary_color" />
 
         <TextView
             android:id="@+id/tvNumeroDePago"
-            style="@style/PaymentTitleText"
+            style="@style/Widget.AppCompat.TextView.Title"
             android:layout_width="match_parent"
-            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:text="Número de pago" />
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:text="Número de pago"
+            android:textColor="@color/text_primary_color" />
 
         <TextView
             android:id="@+id/tvNumeroDePagoInfo"
-            style="@style/PaymentInfoText"
+            style="@style/Widget.AppCompat.TextView.Body"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/text_secondary_color" />
 
         <TextView
             android:id="@+id/tvCodigoDelContrato"
-            style="@style/PaymentTitleText"
+            style="@style/Widget.AppCompat.TextView.Title"
             android:layout_width="match_parent"
-            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:text="Código de contrato" />
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:text="Código de contrato"
+            android:textColor="@color/text_primary_color" />
 
         <TextView
             android:id="@+id/tvCodigoDelContratoInfo"
-            style="@style/PaymentInfoText"
+            style="@style/Widget.AppCompat.TextView.Body"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/text_secondary_color" />
 
         <TextView
             android:id="@+id/tvImporteDelPago"
-            style="@style/PaymentTitleText"
+            style="@style/Widget.AppCompat.TextView.Title"
             android:layout_width="match_parent"
-            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:text="Importe" />
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:text="Importe"
+            android:textColor="@color/text_primary_color" />
 
         <TextView
             android:id="@+id/tvImporteDelPagoInfo"
-            style="@style/PaymentInfoText"
+            style="@style/Widget.AppCompat.TextView.Body"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/text_secondary_color" />
 
         <TextView
             android:id="@+id/tvFechaDePago"
-            style="@style/PaymentTitleText"
+            style="@style/Widget.AppCompat.TextView.Title"
             android:layout_width="match_parent"
-            android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:text="Fecha de pago" />
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:text="Fecha de pago"
+            android:textColor="@color/text_primary_color" />
 
         <TextView
             android:id="@+id/tvFechaDePagoInfo"
-            style="@style/PaymentInfoText"
+            style="@style/Widget.AppCompat.TextView.Body"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/text_secondary_color" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

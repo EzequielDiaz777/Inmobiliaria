@@ -28,10 +28,15 @@ public class InquilinoFragment extends Fragment {
             @Override
             public void onChanged(Inquilino inquilino) {
                 binding.etNombreInquilino.setText(inquilino.getNombre());
+                binding.etNombreInquilino.setFocusable(false);
                 binding.etApellidoInquilino.setText(inquilino.getApellido());
+                binding.etApellidoInquilino.setFocusable(false);
                 binding.etDNIInquilino.setText(inquilino.getDni());
+                binding.etDNIInquilino.setFocusable(false);
                 binding.etEmailInquilino.setText(inquilino.getEmail());
+                binding.etEmailInquilino.setFocusable(false);
                 binding.etTelefonoInquilino.setText(inquilino.getTelefono());
+                binding.etTelefonoInquilino.setFocusable(false);
             }
         });
         vm.cargarInquilino(getArguments());

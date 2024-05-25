@@ -62,14 +62,12 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
     public class ViewHolderPepe extends RecyclerView.ViewHolder {
         TextView precio, direccion;
         ImageView foto;
-        Button btnVerMas;
 
         public ViewHolderPepe(@NonNull View itemView) {
             super(itemView);
             foto = itemView.findViewById(R.id.ivImagenInm);
             direccion = itemView.findViewById(R.id.tvDireccionInm);
             precio = itemView.findViewById(R.id.tvPrecioInm);
-            btnVerMas = itemView.findViewById(R.id.btnVerMas);
         }
     }
 }

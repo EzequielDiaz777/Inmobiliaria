@@ -44,23 +44,14 @@ public class ContratoAdapter extends RecyclerView.Adapter<ContratoAdapter.ViewHo
         // Corregir el formato de la URL de la imagen
         String imageUrl = ApiClient.URL+contrato.getInmueble().getImagenUrl();
         RequestOptions options = new RequestOptions()
-                .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
-                .error(R.drawable.icon_logout); // Imagen de error
+                .placeholder(R.drawable.cargando_imagen) // Imagen de marcador de posición
+                .error(R.drawable.sin_imagen); // Imagen de error
         // Utiliza Glide para cargar y mostrar la imagen
         Glide.with(context)
                 .load(imageUrl) // Especifica la URL de la imagen
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
                 .apply(options)
-                .into(holder.foto); // Especifica el ImageView donde se mostrará la imagen
-        holder.btnVerMas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("desdeVerMas", true); // Enviar el parámetro
-                bundle.putSerializable("contrato", contrato);
-                Navigation.findNavController(v).navigate(R.id.nav_contrato, bundle);
-            }
-        });
+                .into(holder.foto); // Especifica el ImageView donde se mostrará la image
     }
 
     @Override
@@ -71,13 +62,11 @@ public class ContratoAdapter extends RecyclerView.Adapter<ContratoAdapter.ViewHo
     public class ViewHolderPepe extends RecyclerView.ViewHolder {
         TextView direccion;
         ImageView foto;
-        Button btnVerMas;
 
         public ViewHolderPepe(@NonNull View itemView) {
             super(itemView);
             foto = itemView.findViewById(R.id.ivImagenInm);
             direccion = itemView.findViewById(R.id.tvDireccionInm);
-            btnVerMas = itemView.findViewById(R.id.btnVerMas);
         }
     }
 }

@@ -145,8 +145,6 @@ public class InmuebleFragment extends Fragment {
                 binding.etAmbientes.setFocusable(aBoolean);
                 binding.etDireccion.setFocusable(aBoolean);
                 binding.etPrecio.setFocusable(aBoolean);
-                binding.spnTipo.setFocusableInTouchMode(aBoolean);
-                binding.spnUso.setRevealOnFocusHint(aBoolean);
                 binding.btnAgregarInmueble.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
                 binding.btnAgregarFoto.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
             }

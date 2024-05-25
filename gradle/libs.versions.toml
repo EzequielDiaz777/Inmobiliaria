@@ -18,6 +18,7 @@ glide = "5.0.0-rc01"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 legacySupportV4 = "1.0.0"
 uiTextAndroid = "1.6.7"
+biometric = "1.2.0-alpha05"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -37,6 +38,7 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version.ref = "uiTextAndroid" }
+biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

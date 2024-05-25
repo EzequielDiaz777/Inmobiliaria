@@ -44,6 +44,18 @@
         <item name="android:layout_marginTop">@dimen/text_margin_top</item>
     </style>
 
+    <style name="Widget.AppCompat.TextView.Title" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <!-- Agrega otros atributos según sea necesario -->
+    </style>
+
+    <style name="Widget.AppCompat.TextView.Body" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+        <!-- Agrega otros atributos según sea necesario -->
+    </style>
+
+
     <!-- Estilo para la información -->
     <style name="PaymentInfoText">
         <item name="android:layout_width">match_parent</item>

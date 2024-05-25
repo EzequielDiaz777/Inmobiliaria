@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.legacy.support.v4)
     implementation(libs.ui.text.android)
+    implementation(libs.biometric)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

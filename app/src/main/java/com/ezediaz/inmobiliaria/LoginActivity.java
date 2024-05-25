@@ -15,14 +15,24 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.ezediaz.inmobiliaria.databinding.ActivityLoginBinding;
+
+import java.util.concurrent.Executor;
 
 public class LoginActivity extends AppCompatActivity implements SensorEventListener {
     private LoginActivityViewModel vm;
     private ActivityLoginBinding binding;
+    private Executor executor;
+    private BiometricPrompt biometricPrompt;
+    private BiometricPrompt.PromptInfo promptInfo;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
@@ -56,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
         acelVal = SensorManager.GRAVITY_EARTH;
         acelLast = SensorManager.GRAVITY_EARTH;
         shake = 0.00f;
-
+        iniciarAutenticacionBiometrica();
         binding.btnLogin.setOnClickListener(view -> {
             String email = binding.etEmail.getText().toString();
             String password = binding.etPassword.getText().toString();
@@ -64,8 +74,52 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
             binding.etEmail.setText("");
             binding.etPassword.setText("");
         });
-
+        binding.btnFingerprint.setOnClickListener(v -> iniciarAutenticacionBiometrica());
         binding.tvCambiarPassword.setOnClickListener(v -> vm.enviarEmail(binding.etEmail.getText().toString()));
+        // Configurar BiometricPrompt
+        executor = ContextCompat.getMainExecutor(this);
+        biometricPrompt = new BiometricPrompt(LoginActivity.this, executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                // Manejar error de autenticación biométrica
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                // Autenticación biométrica exitosa
+                // Llamar al ViewModel para manejar la lógica de inicio de sesión
+                vm.handleBiometricAuthenticationSuccess();
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                // Manejar falla de autenticación biométrica
+            }
+        });
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Autenticación biométrica")
+                .setSubtitle("Inicia sesión usando tu huella digital")
+                .setNegativeButtonText("Usar contraseña")
+                .build();
+
+        // Mostrar el diálogo de autenticación biométrica al hacer clic en el botón de login
+        binding.btnLogin.setOnClickListener(view -> showBiometricPrompt());
+
+        // Inicializar ViewModel
+        vm = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(LoginActivityViewModel.class);
+    }
+
+    private void showBiometricPrompt() {
+        biometricPrompt.authenticate(promptInfo);
+    }
+
+    // Método para llamar al método en el ViewModel
+    private void iniciarAutenticacionBiometrica() {
+        vm.iniciarAutenticacionBiometrica(this);
     }
 
     private void solicitarPermisos() {
@@ -129,3 +183,4 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
         startActivity(callIntent);
     }
 }
+

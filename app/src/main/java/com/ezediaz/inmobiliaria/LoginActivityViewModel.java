@@ -1,5 +1,6 @@
 package com.ezediaz.inmobiliaria;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +9,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.fragment.app.FragmentActivity;
 
 import com.ezediaz.inmobiliaria.model.Propietario;
 import com.ezediaz.inmobiliaria.request.ApiClient;
+
+import java.util.concurrent.Executor;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,10 +25,54 @@ import retrofit2.Response;
 
 public class LoginActivityViewModel extends AndroidViewModel {
     private SharedPreferences sharedPreferences;
+    private Executor executor;
+    private BiometricPrompt biometricPrompt;
+    private BiometricPrompt.PromptInfo promptInfo;
+    private Activity activity;
 
     public LoginActivityViewModel(@NonNull Application application) {
         super(application);
         sharedPreferences = application.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
+        executor = ContextCompat.getMainExecutor(application);
+    }
+
+    public void iniciarAutenticacionBiometrica(Activity activity) {
+        this.activity = activity;
+        biometricPrompt = new BiometricPrompt((FragmentActivity) activity, executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                // Handle error
+                Log.e("BiometricPrompt", "Authentication error: " + errString);
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                // Authentication succeeded
+                Log.d("BiometricPrompt", "Authentication succeeded");
+                // Continuar con el proceso de login
+                String email = "diazezequiel777@gmail.com";
+                String password = "1234";
+                logueo(email, password);
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                // Authentication failed
+                Log.e("BiometricPrompt", "Authentication failed");
+            }
+        });
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Autenticación biométrica")
+                .setSubtitle("Inicia sesión usando tu huella digital")
+                .setNegativeButtonText("Usar contraseña")
+                .build();
+
+        // Mostrar el diálogo de autenticación biométrica
+        biometricPrompt.authenticate(promptInfo);
     }
 
     public void logueo(String usuario, String clave) {
@@ -76,7 +126,7 @@ public class LoginActivityViewModel extends AndroidViewModel {
     }
 
     private void guardarToken(String token) {
-       ApiClient.guardarToken(token, getApplication());
+        ApiClient.guardarToken(token, getApplication());
     }
 
     private void iniciarMainActivity() {
@@ -105,5 +155,15 @@ public class LoginActivityViewModel extends AndroidViewModel {
         Intent intent = new Intent(getApplication(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Limpiar la pila de actividades
         getApplication().startActivity(intent);
+    }
+
+    public void handleBiometricAuthenticationSuccess() {
+        // Lógica para manejar el inicio de sesión después de una autenticación biométrica exitosa
+        // Authentication succeeded
+        Log.d("BiometricPrompt", "Authentication succeeded");
+        // Continuar con el proceso de login
+        String email = "diazezequiel777@gmail.com";
+        String password = "1234";
+        logueo(email, password);
     }
 }

@@ -17,7 +17,6 @@ import com.ezediaz.inmobiliaria.model.Inmueble;
 import java.util.List;
 
 public class InmueblesFragment extends Fragment {
-    private Context context;
     private FragmentInmueblesBinding binding;
     private InmueblesFragmentViewModel vm;
 

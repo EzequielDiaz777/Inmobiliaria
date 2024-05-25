@@ -7,10 +7,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.ezediaz.inmobiliaria.R;
 import com.ezediaz.inmobiliaria.databinding.FragmentPagosBinding;
+import com.ezediaz.inmobiliaria.model.Contrato;
 import com.ezediaz.inmobiliaria.model.Pago;
+import com.ezediaz.inmobiliaria.ui.inmueble.RecyclerItemClickListener;
+import com.ezediaz.inmobiliaria.ui.inmueble.SpaceItemDecoration;
+
 import java.util.List;
 
 public class PagosFragment extends Fragment {
@@ -27,6 +34,8 @@ public class PagosFragment extends Fragment {
                 PagoAdapter pagoAdapter = new PagoAdapter(pagos, getLayoutInflater());
                 GridLayoutManager glm = new GridLayoutManager(container.getContext(), 1, GridLayoutManager.VERTICAL, false);
                 RecyclerView rv = binding.listaDePagos;
+                int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+                rv.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
                 rv.setLayoutManager(glm);
                 rv.setAdapter(pagoAdapter);
             }

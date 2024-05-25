@@ -52,9 +52,14 @@ public class ContratoFragment extends Fragment {
                 fechaLD = LocalDate.parse(contrato.getFechaFin(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 fechaS = fechaLD.format(formatter);
                 binding.etFechaFin.setText(fechaS);
+                binding.etFechaFin.setFocusable(false);
                 binding.etMonto.setText(String.valueOf(contrato.getPrecio()));
+                binding.etMonto.setFocusable(false);
                 binding.etInquilino.setText(contrato.getInquilino().toString());
+                binding.etInquilino.setFocusable(false);
                 binding.etInmueble.setText(contrato.getInmueble().toString());
+                binding.etInmueble.setFocusable(false);
+                binding.etFechaInicio.setFocusable(false);
             }
         });
         binding.btnVerInquilino.setOnClickListener(new View.OnClickListener() {
@@ -69,23 +74,6 @@ public class ContratoFragment extends Fragment {
                 vm.cargarPagos(v);
             }
         });
-        /*binding.btnVerPagos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("pagos", );
-                Navigation.findNavController(v).navigate(R.id.nav_contrato, bundle);
-            }
-        });
-        binding.btnVerPagos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Inmueble contrato = new Inmueble();
-                contrato.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
-                contrato.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
-                vm.agregarInmueble(contrato, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
-            }
-        });*/
         vm.cargarContratos(getArguments());
         return root;
     }

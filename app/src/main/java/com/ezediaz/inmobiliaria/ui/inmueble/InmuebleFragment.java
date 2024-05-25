@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,7 @@ public class InmuebleFragment extends Fragment {
         vm.getMTipo().observe(getViewLifecycleOwner(), new Observer<Tipo>() {
             @Override
             public void onChanged(Tipo tipo) {
-                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
+                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item);
                 binding.spnTipo.setAdapter(tipoAdapter);
                 tipoAdapter.add(tipo);
                 binding.spnTipo.setSelection(tipoAdapter.getPosition(tipo));
@@ -76,26 +77,24 @@ public class InmuebleFragment extends Fragment {
         vm.getMUso().observe(getViewLifecycleOwner(), new Observer<Uso>() {
             @Override
             public void onChanged(Uso uso) {
-                ArrayAdapter<Uso> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                binding.spnUso.setAdapter(tipoAdapter);
-                tipoAdapter.add(uso);
-                binding.spnUso.setSelection(tipoAdapter.getPosition(uso));
+                ArrayAdapter<Uso> usoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line);
+                binding.spnUso.setAdapter(usoAdapter);
+                usoAdapter.add(uso);
+                binding.spnUso.setSelection(usoAdapter.getPosition(uso));
             }
         });
         vm.getMListaTipo().observe(getViewLifecycleOwner(), new Observer<List<Tipo>>() {
             @Override
             public void onChanged(List<Tipo> tipos) {
-                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
+                ArrayAdapter<Tipo> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, tipos);
                 binding.spnTipo.setAdapter(tipoAdapter);
-                tipoAdapter.addAll(tipos);
             }
         });
         vm.getMListaUso().observe(getViewLifecycleOwner(), new Observer<List<Uso>>() {
             @Override
             public void onChanged(List<Uso> usos) {
-                ArrayAdapter<Uso> tipoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
-                binding.spnUso.setAdapter(tipoAdapter);
-                tipoAdapter.addAll(usos);
+                ArrayAdapter<Uso> usoAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, usos);
+                binding.spnUso.setAdapter(usoAdapter);
             }
         });
         vm.getMTextos().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -148,9 +147,11 @@ public class InmuebleFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Inmueble inmueble = new Inmueble();
-                inmueble.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
-                inmueble.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
-                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
+                inmueble.setTipoId(binding.spnTipo.getId());
+                inmueble.setUsoId(binding.spnUso.getId());
+                Log.d("Id de tipo", String.valueOf(inmueble.getTipoId()));
+                Log.d("Id de uso", String.valueOf(inmueble.getUsoId()));
+                //vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
             }
         });
         vm.cargarInmueble(getArguments());

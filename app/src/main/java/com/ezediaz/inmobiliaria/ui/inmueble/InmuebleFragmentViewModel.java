@@ -32,7 +32,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
     private MutableLiveData<Inmueble> mInmueble;
     private MutableLiveData<Boolean> mDisponible;
     private MutableLiveData<Boolean> mHabilitar;
-
+    private MutableLiveData<String> mCabecera;
     private MutableLiveData<List<Tipo>> mListaTipo;
     private MutableLiveData<List<Uso>> mListaUso;
     private MutableLiveData<Boolean> mTextos;
@@ -72,6 +72,13 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         return mHabilitar;
     }
 
+    public LiveData<String> getMCabecera() {
+        if (mCabecera == null) {
+            mCabecera = new MutableLiveData<>();
+        }
+        return mCabecera;
+    }
+
     public LiveData<List<Tipo>> getMListaTipo() {
         if (mListaTipo == null) {
             mListaTipo = new MutableLiveData<>();
@@ -108,47 +115,43 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
     }
 
     private void cargarTipos() {
+        ApiClient.MisEndPoints apiService = ApiClient.getEndPoints();
         String token = ApiClient.leerToken(getApplication());
-        ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-        Call<List<Tipo>> call = api.obtenerTipos(token);
+        Call<List<Tipo>> call = apiService.obtenerTipos(token);
         call.enqueue(new Callback<List<Tipo>>() {
             @Override
             public void onResponse(Call<List<Tipo>> call, Response<List<Tipo>> response) {
                 if (response.isSuccessful()) {
                     mListaTipo.setValue(response.body());
                 } else {
-                    Toast.makeText(getApplication(), "Falla en la obtención de los tipos de inmueble", Toast.LENGTH_LONG).show();
-                    Log.d("salida", response.message());
+                    Log.e("InmuebleViewModel", "Error al obtener tipos de inmueble: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Tipo>> call, Throwable t) {
-                Toast.makeText(getApplication(), "Falla en la obtención de los tipos de inmueble", Toast.LENGTH_LONG).show();
-                Log.d("salida", t.getMessage());
+                Log.e("InmuebleViewModel", "Error al obtener tipos de inmueble: " + t.getMessage());
             }
         });
     }
 
     private void cargarUsos() {
+        ApiClient.MisEndPoints apiService = ApiClient.getEndPoints();
         String token = ApiClient.leerToken(getApplication());
-        ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-        Call<List<Uso>> call = api.obtenerUsos(token);
+        Call<List<Uso>> call = apiService.obtenerUsos(token);
         call.enqueue(new Callback<List<Uso>>() {
             @Override
             public void onResponse(Call<List<Uso>> call, Response<List<Uso>> response) {
                 if (response.isSuccessful()) {
                     mListaUso.setValue(response.body());
                 } else {
-                    Toast.makeText(getApplication(), "Falla en la obtención de los usos de inmueble", Toast.LENGTH_LONG).show();
-                    Log.d("salida", response.message());
+                    Log.e("InmuebleViewModel", "Error al obtener usos de inmueble: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Uso>> call, Throwable t) {
-                Toast.makeText(getApplication(), "Falla en la obtención de los usos de inmueble", Toast.LENGTH_LONG).show();
-                Log.d("salida", t.getMessage());
+                Log.e("InmuebleViewModel", "Error al obtener usos de inmueble: " + t.getMessage());
             }
         });
     }
@@ -164,6 +167,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         } else {
             cargarTipos();
             cargarUsos();
+
             mHabilitar.setValue(true);
             mTextos.setValue(true);
             mInmueble.setValue(new Inmueble());

@@ -44,23 +44,14 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
         // Corregir el formato de la URL de la imagen
         String imageUrl = ApiClient.URL+inmueble.getImagenUrl();
         RequestOptions options = new RequestOptions()
-                .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
-                .error(R.drawable.icon_logout); // Imagen de error
+                .placeholder(R.drawable.cargando_imagen) // Imagen de marcador de posición
+                .error(R.drawable.sin_imagen); // Imagen de error
         // Utiliza Glide para cargar y mostrar la imagen
         Glide.with(context)
                 .load(imageUrl) // Especifica la URL de la imagen
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
                 .apply(options)
                 .into(holder.foto); // Especifica el ImageView donde se mostrará la imagen
-        holder.btnVerMas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("desdeVerMas", true); // Enviar el parámetro
-                bundle.putSerializable("inmueble", inmueble);
-                Navigation.findNavController(v).navigate(R.id.nav_inmueble, bundle);
-            }
-        });
     }
 
     @Override

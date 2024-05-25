@@ -28,4 +28,6 @@
     <color name="button_text_color">#FFFFFF</color>
     <color name="button_background_color">#4CAF50</color>
     <color name="colorError">#B00020</color>
+    <color name="disabled_text_color">#9E9E9E</color>
+    <color name="disabled_text_color2">#808080</color>
 </resources>

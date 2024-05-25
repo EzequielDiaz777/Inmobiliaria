@@ -1,4 +1,5 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.ezediaz.inmobiliaria.model.Inmueble;
 import java.util.List;
 
 public class InmueblesFragment extends Fragment {
-
+    private Context context;
     private FragmentInmueblesBinding binding;
     private InmueblesFragmentViewModel vm;
 
@@ -33,6 +34,21 @@ public class InmueblesFragment extends Fragment {
                 int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
                 rv.addItemDecoration(new SpaceItemDecoration(spacingInPixels));
                 rv.setLayoutManager(glm);
+                rv.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), rv, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        // Obtener el inmueble en la posición del clic
+                        Inmueble inmuebleSeleccionado = inmueble.get(position);
+
+                        // Crear un Bundle para pasar los datos al siguiente Fragmento
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("desdeVerMas", true); // Enviar el parámetro
+                        bundle.putSerializable("inmueble", inmuebleSeleccionado); // Enviar el inmueble seleccionado
+
+                        // Navegar al siguiente Fragmento y pasar el Bundle como argumento
+                        Navigation.findNavController(view).navigate(R.id.nav_inmueble, bundle);
+                    }
+                }));
                 rv.setAdapter(inmuebleAdapter);
             }
         });

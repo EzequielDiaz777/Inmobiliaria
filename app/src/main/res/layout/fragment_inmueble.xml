@@ -33,14 +33,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/tilCodigo">
+        app:layout_constraintTop_toBottomOf="@+id/tilDireccion">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etAmbientes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Ambientes"
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -51,16 +49,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/tilAmbientes">
+        app:layout_constraintTop_toBottomOf="@+id/tilCodigo">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDireccion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Dirección"
-            android:inputType="text" />
+            android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -69,14 +65,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/tilDireccion">
+        app:layout_constraintTop_toBottomOf="@+id/tilAmbientes">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPrecio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Precio"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -87,7 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Tipo de Inmueble"
+        app:placeholderText="Tipo de Inmueble"
         app:hintAnimationEnabled="true"
         app:hintEnabled="true"
         app:layout_constraintTop_toBottomOf="@+id/tilPrecio"
@@ -106,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Uso del Inmueble"
+        app:placeholderText="Uso del Inmueble"
         app:layout_constraintTop_toBottomOf="@+id/tilTipo">
 
         <Spinner
@@ -122,8 +116,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:tooltipText="Estado del inmueble: "
-        app:layout_constraintTop_toBottomOf="@+id/tilUso">
+        app:placeholderText="Estado del inmueble: "
+        app:layout_constraintTop_toBottomOf="@+id/tilUso"
+        app:startIconContentDescription="Estado del inmueble:">
 
         <CheckBox
             android:id="@+id/cbDisponible"

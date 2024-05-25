@@ -156,24 +156,22 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         });
     }
 
-    public void setearCabecera(String cabecera) {
-
-    }
-
     public void cargarInmueble(Bundle arguments) {
         if (arguments != null) {
             Inmueble inmueble = (Inmueble) arguments.getSerializable("inmueble");
+            mInmueble.setValue(inmueble);
+            mDisponible.setValue(inmueble.isEstado());
             mTipo.setValue(inmueble.getTipo());
             mUso.setValue(inmueble.getUso());
             mHabilitar.setValue(false);
             mTextos.setValue(false);
-            mInmueble.setValue(inmueble);
             mCabecera.setValue("Detalles del inmueble");
         } else {
             cargarTipos();
             cargarUsos();
             mHabilitar.setValue(true);
             mTextos.setValue(true);
+            mDisponible.setValue(false);
             mInmueble.setValue(new Inmueble());
             mCabecera.setValue("Alta del inmueble");
         }
@@ -246,6 +244,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                     // Crear MultipartBody.Part para la imagen
                     RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imagen);
                     MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", imagen.getName(), requestFile);
+                    Log.d("idTipo", String.valueOf(inmueble.getTipoId()));
                     // Realizar la llamada a la API
                     Call<Inmueble> call = api.agregarInmueble(token, tipoId, usoId, direccionBody, ambientesBody, precioBody, estado, imagenPart);
                     call.enqueue(new Callback<Inmueble>() {

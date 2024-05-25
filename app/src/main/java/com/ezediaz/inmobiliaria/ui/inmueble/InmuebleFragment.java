@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,7 @@ import java.util.List;
 public class InmuebleFragment extends Fragment {
     private Intent intent;
     private ActivityResultLauncher<Intent> arl;
+    private Uri photoURI;
     private FragmentInmuebleBinding binding;
     private InmuebleFragmentViewModel vm;
 
@@ -65,8 +67,8 @@ public class InmuebleFragment extends Fragment {
                 binding.etPrecio.setText(String.valueOf(inmueble.getPrecio()));
                 binding.cbDisponible.setChecked(inmueble.isEstado());
                 RequestOptions options = new RequestOptions()
-                        .placeholder(R.drawable.icon_inmuebles) // Imagen de marcador de posición
-                        .error(R.drawable.icon_logout); // Imagen de error
+                        .placeholder(R.drawable.cargando_imagen) // Imagen de marcador de posición
+                        .error(R.drawable.sin_imagen); // Imagen de error
                 // Utiliza Glide para cargar y mostrar la imagen
                 Glide.with(getContext())
                         .load(ApiClient.URL + inmueble.getImagenUrl()) // Especifica la URL de la imagen
@@ -79,6 +81,7 @@ public class InmuebleFragment extends Fragment {
             @Override
             public void onChanged(Boolean disponible) {
                 binding.cbDisponible.setChecked(disponible);
+                binding.cbDisponible.setText(disponible ? "Disponible" : "No disponible");
             }
         });
         vm.getMTipo().observe(getViewLifecycleOwner(), new Observer<Tipo>() {
@@ -88,6 +91,13 @@ public class InmuebleFragment extends Fragment {
                 binding.spnTipo.setAdapter(tipoAdapter);
                 tipoAdapter.add(tipo);
                 binding.spnTipo.setSelection(tipoAdapter.getPosition(tipo));
+                binding.spnTipo.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // Devuelve true para consumir el evento y evitar que se abra el menú desplegable
+                        return true;
+                    }
+                });
             }
         });
         vm.getMUso().observe(getViewLifecycleOwner(), new Observer<Uso>() {
@@ -97,6 +107,13 @@ public class InmuebleFragment extends Fragment {
                 binding.spnUso.setAdapter(usoAdapter);
                 usoAdapter.add(uso);
                 binding.spnUso.setSelection(usoAdapter.getPosition(uso));
+                binding.spnUso.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // Devuelve true para consumir el evento y evitar que se abra el menú desplegable
+                        return true;
+                    }
+                });
             }
         });
         vm.getMListaTipo().observe(getViewLifecycleOwner(), new Observer<List<Tipo>>() {
@@ -125,9 +142,11 @@ public class InmuebleFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 binding.cbDisponible.setEnabled(!aBoolean);
-                binding.etAmbientes.setEnabled(aBoolean);
-                binding.etDireccion.setEnabled(aBoolean);
-                binding.etPrecio.setEnabled(aBoolean);
+                binding.etAmbientes.setFocusable(aBoolean);
+                binding.etDireccion.setFocusable(aBoolean);
+                binding.etPrecio.setFocusable(aBoolean);
+                binding.spnTipo.setFocusableInTouchMode(aBoolean);
+                binding.spnUso.setRevealOnFocusHint(aBoolean);
                 binding.btnAgregarInmueble.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
                 binding.btnAgregarFoto.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
             }
@@ -144,6 +163,7 @@ public class InmuebleFragment extends Fragment {
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
                         .apply(options)
                         .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
+                photoURI = uri;
             }
         });
         binding.cbDisponible.setOnClickListener(new View.OnClickListener() {
@@ -162,11 +182,11 @@ public class InmuebleFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Inmueble inmueble = new Inmueble();
-                inmueble.setTipoId(binding.spnTipo.getId());
-                inmueble.setUsoId(binding.spnUso.getId());
+                inmueble.setTipoId(binding.spnTipo.getSelectedItemPosition() + 1);
+                inmueble.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
                 Log.d("Id de tipo", String.valueOf(inmueble.getTipoId()));
                 Log.d("Id de uso", String.valueOf(inmueble.getUsoId()));
-                //vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
+                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
             }
         });
         vm.cargarInmueble(getArguments());

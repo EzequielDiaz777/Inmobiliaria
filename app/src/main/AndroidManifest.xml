@@ -48,6 +48,7 @@
             android:value="AIzaSyABiH1KEq7J2IzRe_H2v4qnw7F_fS4pHZM" />
 
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".LoginActivity"
             android:exported="true"
             android:label="@string/app_name"

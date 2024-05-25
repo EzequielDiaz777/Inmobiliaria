@@ -9,83 +9,59 @@
         android:id="@+id/nav_mapa"
         android:name="com.ezediaz.inmobiliaria.ui.mapa.MapaFragment"
         android:label="Inicio"
-        tools:layout="@layout/fragment_mapa" />
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_perfil"
         android:name="com.ezediaz.inmobiliaria.ui.perfil.PerfilFragment"
         android:label="Mi perfil"
-        tools:layout="@layout/fragment_perfil" />
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_cambiar_password"
         android:name="com.ezediaz.inmobiliaria.ui.perfil.CambiarPasswordFragment"
         android:label="Cambiar contraseña"
-        tools:layout="@layout/fragment_cambiar_password" />
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_inmuebles"
         android:name="com.ezediaz.inmobiliaria.ui.inmueble.InmueblesFragment"
         android:label="Lista de inmuebles"
-        tools:layout="@layout/fragment_inmuebles">
-        <action
-            android:id="@+id/action_inmueblesFragment_to_inmuebleFragment"
-            app:destination="@id/nav_inmueble" />
-    </fragment>
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_inmueble"
         android:name="com.ezediaz.inmobiliaria.ui.inmueble.InmuebleFragment"
         android:label="Detalle del inmueble"
-        tools:layout="@layout/fragment_inmueble" >
-        <action
-            android:id="@+id/action_nav_inmueble_to_nav_inmuebles"
-            app:destination="@id/nav_inmuebles" />
-    </fragment>
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_contratos"
         android:name="com.ezediaz.inmobiliaria.ui.contrato.ContratosFragment"
         android:label="Lista de contratos"
-        tools:layout="@layout/fragment_contratos" >
-        <action
-            android:id="@+id/action_nav_contratos_to_nav_contrato"
-            app:destination="@id/nav_contrato" />
-    </fragment>
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_contrato"
         android:name="com.ezediaz.inmobiliaria.ui.contrato.ContratoFragment"
         android:label="Detalle del contrato"
-        tools:layout="@layout/fragment_contrato" >
-        <action
-            android:id="@+id/action_nav_contrato_to_nav_contratos"
-            app:destination="@id/nav_contratos" />
-    </fragment>
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_pagos"
         android:name="com.ezediaz.inmobiliaria.ui.pago.PagosFragment"
         android:label="Detalles de pagos del contrato"
-        tools:layout="@layout/fragment_pagos" >
-        <action
-            android:id="@+id/action_nav_pagos_to_nav_contratos"
-            app:destination="@id/nav_contratos" />
-    </fragment>
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_inquilino"
         android:name="com.ezediaz.inmobiliaria.ui.inquilino.InquilinoFragment"
         android:label="Detalle del inquilino"
-        tools:layout="@layout/fragment_inquilino" >
-        <action
-            android:id="@+id/action_nav_inquilino_to_nav_contratos"
-            app:destination="@id/nav_contratos" />
-    </fragment>
+        app:defaultNavHost="true"/>
 
     <fragment
         android:id="@+id/nav_salir"
         android:name="com.ezediaz.inmobiliaria.ui.deslogeo.SalirFragment"
         android:label="Deslogueo"
-        tools:layout="@layout/fragment_salir" />
+        app:defaultNavHost="true"/>
 </navigation>

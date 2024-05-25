@@ -39,7 +39,6 @@ public class PerfilFragment extends Fragment {
                 binding.etApellido.setText(propietario.getApellido());
                 binding.etTelefono.setText(propietario.getTelefono());
                 binding.etEmailPerfil.setText(propietario.getEmail());
-                binding.tvPasswordPerfil.setText(propietario.getPassword());
                 // Obtener el NavigationView desde la actividad principal
                 NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                 sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);

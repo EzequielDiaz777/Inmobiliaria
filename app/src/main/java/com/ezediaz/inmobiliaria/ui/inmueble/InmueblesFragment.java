@@ -37,7 +37,7 @@ public class InmueblesFragment extends Fragment {
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_inmueblesFragment_to_inmuebleFragment);
+                Navigation.findNavController(view).navigate(R.id.nav_inmueble);
             }
         });
         vm.cargarInmuebles();

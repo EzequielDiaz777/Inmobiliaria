@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,15 +5,17 @@
     android:padding="16dp">
 
     <!-- Logo de la aplicación -->
+    <!-- Asegúrate de tener un logo -->
+
+    <!-- Campo de entrada de correo electrónico -->
+
     <ImageView
         android:id="@+id/image_logo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
-        android:src="@drawable/ic_logo" /> <!-- Asegúrate de tener un logo -->
+        android:layout_height="185dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_logo" />
 
-    <!-- Campo de entrada de correo electrónico -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -22,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/image_logo"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:hint="Correo electrónico"
         android:textColorHint="@color/colorSecondaryText">

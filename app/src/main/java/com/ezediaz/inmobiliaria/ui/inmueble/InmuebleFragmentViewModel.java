@@ -245,7 +245,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                             if (response.isSuccessful()) {
                                 Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
                                 NavController navController = Navigation.findNavController(view);
-                                navController.navigate(R.id.action_nav_inmueble_to_nav_inmuebles);
+                                navController.navigate(R.id.nav_inmuebles);
                             } else {
                                 Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
                                 Log.d("salida", response.message());

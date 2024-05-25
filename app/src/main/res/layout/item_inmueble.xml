@@ -16,40 +16,36 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Agrega un ImageView para mostrar la imagen -->
+        <!-- ImageView para mostrar la imagen -->
         <ImageView
             android:id="@+id/ivImagenInm"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:src="@drawable/icon_inmuebles"
-        />
+            />
 
         <TextView
             android:id="@+id/tvDireccionInm"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="3"
             android:text="Dirección"
-            android:textColor="@color/text_primary_color"
-            android:textSize="18sp" />
+            android:textColor="@color/text_primary_color" />
 
         <TextView
             android:id="@+id/tvPrecioInm"
+            style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Precio"
-            android:textColor="@color/text_secondary_color"
-            android:textSize="14sp" />
+            android:textColor="@color/text_secondary_color" />
 
         <Button
             android:id="@+id/btnVerMas"
@@ -57,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
             android:text="Ver más"
             android:textColor="@color/button_text_color"
             android:backgroundTint="@color/button_background_color"/>

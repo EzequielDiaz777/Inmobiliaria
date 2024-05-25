@@ -10,6 +10,10 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
     <!-- Estilo para los enlaces de texto -->
     <style name="AppTheme.TextLink">
         <item name="android:textColor">@color/colorAccent</item>

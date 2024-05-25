@@ -156,6 +156,10 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         });
     }
 
+    public void setearCabecera(String cabecera) {
+
+    }
+
     public void cargarInmueble(Bundle arguments) {
         if (arguments != null) {
             Inmueble inmueble = (Inmueble) arguments.getSerializable("inmueble");
@@ -164,13 +168,14 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
             mHabilitar.setValue(false);
             mTextos.setValue(false);
             mInmueble.setValue(inmueble);
+            mCabecera.setValue("Detalles del inmueble");
         } else {
             cargarTipos();
             cargarUsos();
-
             mHabilitar.setValue(true);
             mTextos.setValue(true);
             mInmueble.setValue(new Inmueble());
+            mCabecera.setValue("Alta del inmueble");
         }
     }
 

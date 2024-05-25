@@ -1,4 +1,5 @@
 package com.ezediaz.inmobiliaria.ui.inmueble;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -13,9 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,7 +37,6 @@ import java.util.List;
 
 public class InmuebleFragment extends Fragment {
     private Intent intent;
-    private Uri photoURI;
     private ActivityResultLauncher<Intent> arl;
     private FragmentInmuebleBinding binding;
     private InmuebleFragmentViewModel vm;
@@ -39,7 +46,16 @@ public class InmuebleFragment extends Fragment {
         binding = FragmentInmuebleBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         vm = new ViewModelProvider(this).get(InmuebleFragmentViewModel.class);
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
         abrirGaleria();
+        vm.getMCabecera().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String cabecera) {
+                Log.d("cabecera", "NavController.getGraph.findNode.getLabel: " + navController.getGraph().findNode(R.id.nav_inmueble).getLabel());
+                navController.getGraph().findNode(R.id.nav_inmueble).setLabel(cabecera);
+                Log.d("cabecera", "NavController.getGraph.findNode.getLabel: " + navController.getGraph().findNode(R.id.nav_inmueble).getLabel());
+            }
+        });
         vm.getMInmueble().observe(getViewLifecycleOwner(), new Observer<Inmueble>() {
             @Override
             public void onChanged(Inmueble inmueble) {
@@ -128,7 +144,6 @@ public class InmuebleFragment extends Fragment {
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) // Carga la caché para obtener la imagen
                         .apply(options)
                         .into(binding.ivFoto); // Especifica el ImageView donde se mostrará la imagen
-                photoURI = uri;
             }
         });
         binding.cbDisponible.setOnClickListener(new View.OnClickListener() {

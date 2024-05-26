@@ -39,7 +39,7 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolderPepe holder, int position) {
         Inmueble inmueble = listaDeInmuebles.get(position);
-        holder.precio.setText(Utils.formatPrice(inmueble.getPrecio()));
+        holder.precio.setText("$" + Utils.formatPrice(inmueble.getPrecio()));
         holder.direccion.setText(inmueble.getDireccion());
         // Corregir el formato de la URL de la imagen
         String imageUrl = ApiClient.URL+inmueble.getImagenUrl();

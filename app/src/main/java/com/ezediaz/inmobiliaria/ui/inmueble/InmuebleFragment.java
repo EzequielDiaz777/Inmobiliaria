@@ -8,6 +8,8 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -34,7 +37,11 @@ import com.ezediaz.inmobiliaria.model.Inmueble;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
 import com.ezediaz.inmobiliaria.request.ApiClient;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 public class InmuebleFragment extends Fragment {
     private Intent intent;
@@ -64,7 +71,7 @@ public class InmuebleFragment extends Fragment {
                 binding.etCodigo.setText(String.valueOf(inmueble.getId()));
                 binding.etAmbientes.setText(String.valueOf(inmueble.getAmbientes()));
                 binding.etDireccion.setText(inmueble.getDireccion());
-                binding.etPrecio.setText((Utils.formatPrice(inmueble.getPrecio())));
+                binding.etPrecio.setText(("$" +Utils.formatPrice(inmueble.getPrecio())));
                 binding.cbDisponible.setChecked(inmueble.isEstado());
                 RequestOptions options = new RequestOptions()
                         .placeholder(R.drawable.cargando_imagen) // Imagen de marcador de posición
@@ -197,6 +204,25 @@ public class InmuebleFragment extends Fragment {
             @Override
             public void onActivityResult(ActivityResult ar) {
                 vm.cargarFoto(ar);
+            }
+        });
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        binding.etPrecio.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                vm.corregirPrecio(s, binding.etPrecio, this);
             }
         });
     }

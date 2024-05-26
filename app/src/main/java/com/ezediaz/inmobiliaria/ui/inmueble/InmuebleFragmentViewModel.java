@@ -3,8 +3,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.annotation.NonNull;
@@ -20,7 +23,12 @@ import com.ezediaz.inmobiliaria.model.RealPathUtil;
 import com.ezediaz.inmobiliaria.model.Tipo;
 import com.ezediaz.inmobiliaria.model.Uso;
 import com.ezediaz.inmobiliaria.request.ApiClient;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -234,40 +242,75 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                 String token = ApiClient.leerToken(getApplication());
                 if (token != null) {
                     ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-                    // Convertir campos a RequestBody
-                    RequestBody tipoId = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.getTipoId()));
-                    RequestBody usoId = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.getUsoId()));
-                    RequestBody direccionBody = RequestBody.create(MediaType.parse("application/json"), direccion);
-                    RequestBody ambientesBody = RequestBody.create(MediaType.parse("application/json"), ambientes);
-                    RequestBody precioBody = RequestBody.create(MediaType.parse("application/json"), precio);
-                    RequestBody estado = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.isEstado()));
-                    // Crear MultipartBody.Part para la imagen
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imagen);
-                    MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", imagen.getName(), requestFile);
-                    Log.d("idTipo", String.valueOf(inmueble.getTipoId()));
-                    // Realizar la llamada a la API
-                    Call<Inmueble> call = api.agregarInmueble(token, tipoId, usoId, direccionBody, ambientesBody, precioBody, estado, imagenPart);
-                    call.enqueue(new Callback<Inmueble>() {
-                        @Override
-                        public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
-                            if (response.isSuccessful()) {
-                                Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
-                                NavController navController = Navigation.findNavController(view);
-                                navController.navigate(R.id.nav_inmuebles);
-                            } else {
-                                Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
-                                Log.d("salida", response.message());
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(Call<Inmueble> call, Throwable throwable) {
-                            Log.d("salida", "Falla: " + throwable.getMessage());
-                        }
-                    });
+                    // Limpiar y convertir el precio a un formato numérico
+                    String cleanedPrecio = precio.replace("$", "").replace(".", "");
+                    try {
+                        RequestBody tipoId = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.getTipoId()));
+                        RequestBody usoId = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.getUsoId()));
+                        RequestBody direccionBody = RequestBody.create(MediaType.parse("application/json"), direccion);
+                        RequestBody ambientesBody = RequestBody.create(MediaType.parse("application/json"), ambientes);
+                        RequestBody precioBody = RequestBody.create(MediaType.parse("application/json"), cleanedPrecio);
+                        RequestBody estado = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.isEstado()));
+
+                        // Crear MultipartBody.Part para la imagen
+                        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imagen);
+                        MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", imagen.getName(), requestFile);
+
+                        // Realizar la llamada a la API
+                        Call<Inmueble> call = api.agregarInmueble(token, tipoId, usoId, direccionBody, ambientesBody, precioBody, estado, imagenPart);
+                        call.enqueue(new Callback<Inmueble>() {
+                            @Override
+                            public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
+                                    NavController navController = Navigation.findNavController(view);
+                                    navController.navigate(R.id.nav_inmuebles);
+                                } else {
+                                    Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
+                                    Log.d("salida", response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Inmueble> call, Throwable throwable) {
+                                Log.d("salida", "Falla: " + throwable.getMessage());
+                            }
+                        });
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getApplication(), "El formato del precio es incorrecto", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         }
+    }
+
+    public void corregirPrecio(Editable s, EditText precio, TextWatcher textWatcher){
+        String current;
+        if (!s.toString().isEmpty()) {
+            precio.removeTextChangedListener(textWatcher);
+
+            String cleanString = s.toString().replaceAll("[^\\d]", "");
+
+            if (!cleanString.isEmpty()) {
+                double parsed = Double.parseDouble(cleanString) / 100;
+                String formatted = formatPrice(parsed);
+                current = formatted;
+                precio.setText("$"+formatted);
+                precio.setSelection(formatted.length()+1);
+            }
+
+            precio.addTextChangedListener(textWatcher);
+        }
+    }
+
+    private String formatPrice(double price) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", symbols);
+        return decimalFormat.format(price);
     }
 }
 

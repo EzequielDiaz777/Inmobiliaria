@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:padding="15dp"
         android:textAlignment="center"
-        android:background="@drawable/border_pagos">
+        android:background="@drawable/border">
 
         <TextView
             android:id="@+id/tvCodigoPago"

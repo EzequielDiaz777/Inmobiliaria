@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
-    private final int space; // Espacio entre elementos en píxeles
+    private final int space;
 
     public SpaceItemDecoration(int space) {
         this.space = space;

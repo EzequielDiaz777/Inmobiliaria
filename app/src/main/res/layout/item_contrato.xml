@@ -5,10 +5,10 @@
     android:id="@+id/cvItemContrato"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/card_background_color"
+    app:cardBackgroundColor="@color/cardview_light_background"
     app:cardCornerRadius="20dp"
     app:cardElevation="10dp"
-    app:contentPadding="10dp">
+    app:contentPadding="15dp">
 
     <LinearLayout
         android:id="@+id/itemContrato"

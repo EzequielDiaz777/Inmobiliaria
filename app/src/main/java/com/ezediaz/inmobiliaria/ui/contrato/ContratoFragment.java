@@ -55,7 +55,7 @@ public class ContratoFragment extends Fragment {
                 fechaS = fechaLD.format(formatter);
                 binding.etFechaFin.setText(fechaS);
                 binding.etFechaFin.setFocusable(false);
-                binding.etMonto.setText(Utils.formatPrice(contrato.getPrecio()));
+                binding.etMonto.setText("$" + Utils.formatPrice(contrato.getPrecio()));
                 binding.etMonto.setFocusable(false);
                 binding.etInquilino.setText(contrato.getInquilino().toString());
                 binding.etInquilino.setFocusable(false);

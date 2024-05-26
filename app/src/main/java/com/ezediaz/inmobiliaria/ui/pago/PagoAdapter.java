@@ -47,7 +47,7 @@ public class PagoAdapter extends RecyclerView.Adapter<PagoAdapter.ViewHolderPepe
         holder.codigoP.setText(String.valueOf(pago.getId()));
         holder.numeroDP.setText(String.valueOf(pago.getNumeroDePago()));
         holder.codigoC.setText(String.valueOf(pago.getContratoId()));
-        holder.importe.setText(Utils.formatPrice(pago.getMonto()));
+        holder.importe.setText("$" + Utils.formatPrice(pago.getMonto()));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'del' yyyy");
         LocalDate fechaLD = LocalDate.parse(pago.getFecha(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String fechaS = fechaLD.format(formatter);

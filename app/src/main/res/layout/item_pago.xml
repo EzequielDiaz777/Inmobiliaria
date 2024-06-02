@@ -19,24 +19,6 @@
         android:background="@drawable/border">
 
         <TextView
-            android:id="@+id/tvCodigoPago"
-            style="@style/Widget.AppCompat.TextView.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAlignment="center"
-            android:text="Código de pago"
-            android:textColor="@color/text_primary_color" />
-
-        <TextView
-            android:id="@+id/tvCodigoPagoInfo"
-            style="@style/Widget.AppCompat.TextView.Body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/text_secondary_color" />
-
-        <TextView
             android:id="@+id/tvNumeroDePago"
             style="@style/Widget.AppCompat.TextView.Title"
             android:layout_width="match_parent"
@@ -48,24 +30,6 @@
 
         <TextView
             android:id="@+id/tvNumeroDePagoInfo"
-            style="@style/Widget.AppCompat.TextView.Body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/text_secondary_color" />
-
-        <TextView
-            android:id="@+id/tvCodigoDelContrato"
-            style="@style/Widget.AppCompat.TextView.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAlignment="center"
-            android:text="Código de contrato"
-            android:textColor="@color/text_primary_color" />
-
-        <TextView
-            android:id="@+id/tvCodigoDelContratoInfo"
             style="@style/Widget.AppCompat.TextView.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

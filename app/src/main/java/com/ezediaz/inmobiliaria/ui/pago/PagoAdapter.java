@@ -44,9 +44,7 @@ public class PagoAdapter extends RecyclerView.Adapter<PagoAdapter.ViewHolderPepe
     @Override
     public void onBindViewHolder(@NonNull ViewHolderPepe holder, int position) {
         Pago pago = listaDePagos.get(position);
-        holder.codigoP.setText(String.valueOf(pago.getId()));
         holder.numeroDP.setText(String.valueOf(pago.getNumeroDePago()));
-        holder.codigoC.setText(String.valueOf(pago.getContratoId()));
         holder.importe.setText("$" + Utils.formatPrice(pago.getMonto()));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'del' yyyy");
         LocalDate fechaLD = LocalDate.parse(pago.getFecha(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -64,9 +62,7 @@ public class PagoAdapter extends RecyclerView.Adapter<PagoAdapter.ViewHolderPepe
 
         public ViewHolderPepe(@NonNull View itemView) {
             super(itemView);
-            codigoP = itemView.findViewById(R.id.tvCodigoPagoInfo);
             numeroDP = itemView.findViewById(R.id.tvNumeroDePagoInfo);
-            codigoC = itemView.findViewById(R.id.tvCodigoDelContratoInfo);
             importe = itemView.findViewById(R.id.tvImporteDelPagoInfo);
             fecha = itemView.findViewById(R.id.tvFechaDePagoInfo);
         }

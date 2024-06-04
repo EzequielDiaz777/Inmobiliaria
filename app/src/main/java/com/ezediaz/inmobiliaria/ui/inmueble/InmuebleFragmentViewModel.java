@@ -39,6 +39,7 @@ import retrofit2.Response;
 public class InmuebleFragmentViewModel extends AndroidViewModel {
     private MutableLiveData<Inmueble> mInmueble;
     private MutableLiveData<Boolean> mDisponible;
+    private MutableLiveData<Boolean> mNavegarAInmuebles;
     private MutableLiveData<Boolean> mHabilitar;
     private MutableLiveData<String> mCabecera;
     private MutableLiveData<List<Tipo>> mListaTipo;
@@ -64,6 +65,13 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
             mDisponible = new MutableLiveData<>();
         }
         return mDisponible;
+    }
+
+    public LiveData<Boolean> getMNavegarAInmuebles() {
+        if (mNavegarAInmuebles == null) {
+            mNavegarAInmuebles = new MutableLiveData<>();
+        }
+        return mNavegarAInmuebles;
     }
 
     public LiveData<Boolean> getMTextos() {
@@ -226,7 +234,7 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
         }
     }
 
-    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, Uri photoUri, View view) {
+    public void agregarInmueble(Inmueble inmueble, String ambientes, String direccion, String precio, Uri photoUri) {
         if (ambientes.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
             Toast.makeText(getApplication(), "Debe ingresar todos los datos antes de guardar el inmueble", Toast.LENGTH_LONG).show();
         } else if (photoUri == null) {
@@ -242,8 +250,6 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                 String token = ApiClient.leerToken(getApplication());
                 if (token != null) {
                     ApiClient.MisEndPoints api = ApiClient.getEndPoints();
-
-                    // Limpiar y convertir el precio a un formato numérico
                     String cleanedPrecio = precio.replace("$", "").replace(".", "");
                     try {
                         RequestBody tipoId = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.getTipoId()));
@@ -252,20 +258,15 @@ public class InmuebleFragmentViewModel extends AndroidViewModel {
                         RequestBody ambientesBody = RequestBody.create(MediaType.parse("application/json"), ambientes);
                         RequestBody precioBody = RequestBody.create(MediaType.parse("application/json"), cleanedPrecio);
                         RequestBody estado = RequestBody.create(MediaType.parse("application/json"), String.valueOf(inmueble.isEstado()));
-
-                        // Crear MultipartBody.Part para la imagen
                         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imagen);
                         MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", imagen.getName(), requestFile);
-
-                        // Realizar la llamada a la API
                         Call<Inmueble> call = api.agregarInmueble(token, tipoId, usoId, direccionBody, ambientesBody, precioBody, estado, imagenPart);
                         call.enqueue(new Callback<Inmueble>() {
                             @Override
                             public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
                                 if (response.isSuccessful()) {
                                     Toast.makeText(getApplication(), "Inmueble dado de alta con exito", Toast.LENGTH_LONG).show();
-                                    NavController navController = Navigation.findNavController(view);
-                                    navController.navigate(R.id.nav_inmuebles);
+                                    mNavegarAInmuebles.setValue(true);
                                 } else {
                                     Toast.makeText(getApplication(), "Falla en el dado de alta del inmueble", Toast.LENGTH_LONG).show();
                                     Log.d("salida", response.message());

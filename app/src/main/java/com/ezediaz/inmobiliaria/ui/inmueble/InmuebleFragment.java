@@ -91,6 +91,15 @@ public class InmuebleFragment extends Fragment {
                 binding.cbDisponible.setText(disponible ? "Disponible" : "No disponible");
             }
         });
+        vm.getMNavegarAInmuebles().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+                    navController.navigate(R.id.nav_inmuebles);
+                }
+            }
+        });
         vm.getMTipo().observe(getViewLifecycleOwner(), new Observer<Tipo>() {
             @Override
             public void onChanged(Tipo tipo) {
@@ -191,7 +200,7 @@ public class InmuebleFragment extends Fragment {
                 inmueble.setUsoId(binding.spnUso.getSelectedItemPosition() + 1);
                 Log.d("Id de tipo", String.valueOf(inmueble.getTipoId()));
                 Log.d("Id de uso", String.valueOf(inmueble.getUsoId()));
-                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI, binding.getRoot());
+                vm.agregarInmueble(inmueble, binding.etAmbientes.getText().toString(), binding.etDireccion.getText().toString(), binding.etPrecio.getText().toString(), photoURI);
             }
         });
         vm.cargarInmueble(getArguments());
